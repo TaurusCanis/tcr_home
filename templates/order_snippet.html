@@ -1,0 +1,133 @@
+<!--Grid column-->
+<div class="col-md-12 mb-4">
+
+  <!-- Heading -->
+  <div class="row">
+    <h4 class="d-flex justify-content-between align-items-center mb-3">
+      <div class="text-muted"><span>Order ID: </span><span id="order_id">{{ order.id }}</span></div>
+    </h4>
+  </div>
+  <h4 class="d-flex justify-content-between align-items-center mb-3">
+    <span class="text-muted">Your cart</span>
+    <span class="badge badge-secondary badge-pill">{{ order.items.count }}</span>
+  </h4>
+
+
+
+  <!-- Cart -->
+  <ul class="list-group mb-3 z-depth-1">
+    {% for order_item in order.items.all %}
+    <li class="list-group-item d-flex justify-content-between lh-condensed">
+      <div>
+        <h6 class="my-0">{{ order_item.quantity }} x {{ order_item.item.title }}</h6>
+        <small class="text-muted">{{ order_item.item.description }}</small>
+      </div>
+      <span class="text-muted">${{ order_item.get_final_price }}</span>
+    </li>
+    {% endfor %}
+    {% if order.coupon %}
+    <li class="list-group-item d-flex justify-content-between bg-light">
+      <div class="text-success">
+        <h6 class="my-0">Promo code</h6>
+        <small>{{ order.coupon.code }}</small>
+      </div>
+      <span class="text-success">-${{ order.coupon.amount }}</span>
+    </li>
+    {% endif %}
+    <!-- <li class="list-group-item d-flex justify-content-between">
+      <span>Subotal (USD)</span>
+      <strong>${{ order.subtotal }}</strong>
+    </li> -->
+    <!-- <li class="list-group-item d-flex justify-content-between">
+      <span>Tax (USD)</span>
+      <strong>${{ order.tax }}</strong>
+    </li> -->
+    {% if order.shipping_cost %}
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Shipping (USD)</span>
+      <strong>${{ order.shipping_cost }}</strong>
+    </li>
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Total (USD)</span>
+      <strong>$<span id="total_amount">{{ order.get_total }}</span></strong>
+    </li>
+    {% else %}
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Shipping (USD)</span>
+      <strong>Calculated at Checkout</strong>
+    </li>
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Subtotal (USD)</span>
+      <strong>$<span id="total_amount">{{ order.get_total }}</span></strong>
+    </li>
+    {% endif %}
+  </ul>
+  <div class="row justify-content-end">
+    <a class='btn btn-primary float-right' href='/'>Continue shopping</a>
+  </div>
+  <!-- Cart -->
+
+  {% if DISPLAY_COUPON_FORM %}
+  <!-- Promo code -->
+  <form class="card p-2" method="POST" action="{% url 'core:add_coupon' %}">
+    {% csrf_token %}
+    <div class="input-group">
+      <!-- <input type="text" class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2"> -->
+      {{ coupon_form.code }}
+      <div class="input-group-append">
+        <button class="btn btn-secondary btn-md waves-effect m-0" type="submit">Redeem</button>
+      </div>
+    </div>
+  </form>
+
+  {% endif %}
+  <!-- Promo code -->
+
+  <!-- Customer Info -->
+  <!-- <h4 class="d-flex justify-content-between align-items-center mb-3"> -->
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-6">
+        <h5>Ship to:</h5>
+
+        <div class="my-0" id="customer_name">{{ order.customer.first_name }} {{ order.customer.last_name }}</div>
+        <div class="my-0" id="shipping_street_address">{{ order.shipping_address.street_address }}</div>
+        <div class="my-0" id="shipping_street_address_2">{{ order.shipping_address.apartment_address }}</div>
+        <div class="my-0" id="shipping_city">
+          <span class="my-0" id="shipping_state">{{ order.shipping_address.city }}</span>, <span class="my-0"
+            id="shipping_state">{{ order.shipping_address.state }}</span>
+        </div>
+        <h6 class="my-0" id="shipping_zip">{{ order.shipping_address.zip }}</h6>
+        <h6 class="my-0" id="shipping_country">{{ order.shipping_address.country }}</h6>
+      </div>
+      <!-- </h4> -->
+
+      <!-- <h4 class="d-flex justify-content-between align-items-center mb-3"> -->
+      <div class="col-6">
+        <h5>Billing Address:</h5>
+
+        <div class="my-0" id="billing_street_address">{{ order.billing_address.street_address }}</div>
+        <div class="my-0" id="billing_street_address_2">{{ order.billing_address.apartment_address }}</div>
+        <div class="my-0" id="billing_city">
+          <span class="my-0" id="shipping_state">{{ order.billing_address.city }}</span>, <span class="my-0"
+            id="billing_state">{{ order.billing_address.state }}</span>
+        </div>
+        <h6 class="my-0" id="billing_zip">{{ order.billing_address.zip }}</h6>
+        <h6 class="my-0" id="billing_country">{{ order.billing_address.country }}</h6>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row justify-content-end">
+        <a class='btn btn-primary float-right' href='/checkout'>Edit Shipping or Billing Address</a>
+      </div>
+    </div>
+  </div>
+  <!-- </h4> -->
+  <!-- <h4 class="d-flex justify-content-between align-items-center mb-3">
+    <span class="text-muted" id="billing_street_address">{{ order.billing_address.street_address }}</span>
+    <span class="text-muted" id="billing_street_address_2">{{ order.billing_address.apartment_address }}</span>
+    <span class="text-muted" id="billing_city">{{ order.billing_address.city }}</span>
+    <span class="text-muted" id="billing_state">{{ order.billing_address.state }}</span>
+    <span class="text-muted" id="billing_country">{{ order.billing_address.country }}</span>
+    <span class="text-muted" id="billing_zip">{{ order.billing_address.zip }}</span>
+  </h4> -->

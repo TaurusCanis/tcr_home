@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<meta charset="utf-8">
+<script src="https://js.braintreegateway.com/web/dropin/1.23.0/js/dropin.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.65.0/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.65.0/js/data-collector.min.js"></script>
+{% endblock extra_head %}
+
+{% block content %}
+
+<main>
+  <div class="container wow fadeIn">
+
+    <h2 class="my-5 h2 text-center">Payment</h2>
+    <h3>Please confirm your order details below:</h3>
+    <div class="row">
+
+      {% include "order_snippet.html" %}
+
+    </div>
+    <!--Grid column-->
+    <div class="container">
+      {% include "braintree.html" %}
+      <!-- {% include "stripe.html" %} -->
+    </div>
+
+
+  </div>
+
+  </div>
+</main>
+
+{% endblock content %}

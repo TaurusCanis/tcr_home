@@ -1,0 +1,152 @@
+<div class="row justify-content-center">
+    <div id="dropin-container"></div>
+</div>
+<div class="row justify-content-center">
+    <!-- <div class="col text-center text-md-left text-md-right"> -->
+    <button class="col-6 btn btn-primary btn-lg btn-block" id="submit-button">Place Order</button>
+    <!-- </div> -->
+</div>
+
+<!-- <form action="." method="post" class="stripe-form" id="stripe-form">
+    {% csrf_token %}
+    <div class="stripe-form-row">
+        <button id="stripeBtn">Submit Payment</button>
+    </div>
+</form> -->
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var button = document.querySelector('#submit-button');
+
+    window.onload = function () {
+
+        xml = new XMLHttpRequest();
+        url = "/braintree_client_token/"
+        xml.open("POST", url)
+
+        xml.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+
+        xml.onreadystatechange = function () {
+            console.log("onstatereadychange")
+            if (xml.readyState === XMLHttpRequest.DONE) {
+                if (xml.status === 200) {
+                    client_token_from_server = JSON.parse(xml.responseText)["token"]
+                    console.log("client_token_from_server: ", client_token_from_server)
+                    braintree_drop_in(client_token_from_server)
+                } else {
+                    // There was a problem with the request.
+                    // For example, the response may have a 404 (Not Found)
+                    // or 500 (Internal Server Error) response code.
+                }
+            } else {
+                // Not ready yet.
+            }
+        }
+
+        xml.send()
+    }
+
+    function braintree_drop_in(client_token_from_server) {
+        var deviceData;
+        braintree.dropin.create({
+            authorization: client_token_from_server,
+            container: '#dropin-container'
+        }, function (createErr, instance) {
+            console.log("Inside create")
+            console.log("instance: ", instance)
+            braintree.client.create({
+                authorization: client_token_from_server
+            }, function (err, clientInstance) {
+                // Creation of any other components...
+
+                braintree.dataCollector.create({
+                    client: clientInstance,
+                    paypal: true
+                }, function (err, dataCollectorInstance) {
+                    if (err) {
+                        console.log("error: ", err)
+                        // Handle error in creation of data collector
+                        return;
+                    }
+                    // At this point, you should access the dataCollectorInstance.deviceData value and provide it
+                    // to your server, e.g. by injecting it into your form as a hidden input.
+                    console.log("dataCollectorInstance: ", dataCollectorInstance)
+                    deviceData = dataCollectorInstance.deviceData;
+                    console.log("device data: ", deviceData)
+                });
+            });
+
+            button.addEventListener('click', function () {
+                instance.requestPaymentMethod(function (err, payload) {
+                    // Submit payload.nonce to your server
+                    xml = new XMLHttpRequest();
+                    url = "/braintree_create_purchase/"
+                    xml.open("POST", url)
+
+                    xml.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                    // xhr.setRequestHeader('Content-Type', 'application/json');
+
+                    xml.onreadystatechange = function () {
+                        if (xml.readyState === XMLHttpRequest.DONE) {
+                            if (xml.status === 200) {
+                                url = JSON.parse(xml.responseText)["url"]
+                                window.location.href = "/" + url + "/"
+                            } else {
+                                // There was a problem with the request.
+                                // For example, the response may have a 404 (Not Found)
+                                // or 500 (Internal Server Error) response code.
+                            }
+                        } else {
+                            // Not ready yet.
+                        }
+                    }
+
+                    xml.send(
+                        JSON.stringify(
+                            {
+                                "nonce_from_the_client": payload.nonce,
+                                "amount": document.querySelector("#total_amount").innerHTML,
+                                "device_data_from_the_client": deviceData,
+                                "order_id": document.querySelector("#order_id").innerHTML,
+                                // "customer": {
+
+                                // },
+                                "billing": {
+                                    "street_address": document.querySelector("#billing_street_address").innerHTML,
+                                    "extended_address": document.querySelector("#billing_street_address_2").innerHTML,
+                                    "locality": document.querySelector("#billing_city").innerHTML,
+                                    "region": document.querySelector("#billing_state").innerHTML,
+                                    "postal_code": document.querySelector("#billing_zip").innerHTML,
+                                    "country_code_alpha2": document.querySelector("#billing_country").innerHTML,
+                                },
+                                "shipping": {
+                                    "street_address": document.querySelector("#shipping_street_address").innerHTML,
+                                    "extended_address": document.querySelector("#shipping_street_address_2").innerHTML,
+                                    "locality": document.querySelector("#shipping_city").innerHTML,
+                                    "region": document.querySelector("#shipping_state").innerHTML,
+                                    "postal_code": document.querySelector("#shipping_zip").innerHTML,
+                                    "country_code_alpha2": document.querySelector("#shipping_country").innerHTML,
+                                }
+                            }
+                        )
+                    )
+                });
+            });
+        });
+    }
+
+
+</script>

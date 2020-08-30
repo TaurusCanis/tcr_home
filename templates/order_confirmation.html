@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+
+  <!--Main layout-->
+  <main>
+    <div class="container">
+      <div class="table-responsive text-nowrap">
+        <h2>Order Confirmation</h2>
+        <h3>Order Reference Number: {{ order.ref_code }}</h3>
+        {% include "order_snippet.html" %}
+      </div>
+    </div>
+  </main>
+  <!--Main layout-->
+{% endblock %}
