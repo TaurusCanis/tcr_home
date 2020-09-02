@@ -41,14 +41,14 @@
 
       <!-- Right -->
       <ul class="navbar-nav nav-flex-icons">
-          <li class="nav-item">
-            <a href="{% url 'core:order_summary' %}" class="nav-link waves-effect">
-              <span class="badge red z-depth-1 mr-1"> {{ request.session.id| cart_item_count }} </span>
-              <i class="fas white-text fa-shopping-cart"></i>
-              <span class="clearfix white-text d-none d-sm-inline-block"> Cart </span>
-            </a>
-          </li>
-          <li class="nav-item">
+        <li class="nav-item">
+          <a href="{% url 'core:order_summary' %}" class="nav-link waves-effect">
+            <span class="badge red z-depth-1 mr-1"> {{ request.session.id| cart_item_count }} </span>
+            <i class="fas white-text fa-shopping-cart"></i>
+            <span class="clearfix white-text d-none d-sm-inline-block"> Cart </span>
+          </a>
+        </li>
+        <!-- <li class="nav-item">
             <a href="https://www.facebook.com/mdbootstrap" class="nav-link waves-effect" target="_blank">
               <i class="fab white-text fa-facebook-f"></i>
             </a>
@@ -63,7 +63,7 @@
               target="_blank">
               <i class="fab fa-github mr-2"></i>MDB GitHub
             </a>
-          </li>
+          </li> -->
       </ul>
 
     </div>

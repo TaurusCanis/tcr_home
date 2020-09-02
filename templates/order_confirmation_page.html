@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Order Confirmation Page</h1>
-<div>
-    Thank you for your order!
-</div>
+<main>
+    <div class="conatiner">
+        <h1>Order Confirmation Page</h1>
+        <div>
+            Thank you for your order!
+        </div>
+        <div>
+            {% include "order_snippet.html" %}
+        </div>
+    </div>
+</main>
 {% endblock %}

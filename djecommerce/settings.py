@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_countries',
     'localflavor',
+    'django_inlinecss',
 ]
 
 MIDDLEWARE = [
@@ -65,9 +66,17 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, 'db.sqlite3')
+    # "default": {
+    #     "ENGINE": "django.db.backends.sqlite3",
+    #     "NAME": os.path.join(BASE_DIR, 'db.sqlite3')
+    # }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd8lluoubfh2jqn',
+        'USER': 'uqisvjrecehgke',
+        'PASSWORD': 'e7ac991abb3ff70807cd66eed17f5a1b3d1992dff8c7fbd1e83f79523c01674a',
+        'HOST': 'ec2-18-210-214-86.compute-1.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
@@ -104,3 +113,10 @@ STRIPE_PUBLIC_KEY = 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ'
 STRIPE_SECRET_KEY = 'sk_test_sYyZfPMDiefqOPb1I6yZvHzM00GXAujNFH'
 
 PRINTFUL_KEY = '6bhck2wu-onuj-xp2n:ltb0-wsfqq6pskkwe'
+
+EMAIL_HOST = "mail.privateemail.com"
+EMAIL_PORT = "465"
+EMAIL_HOST_USER = "admin@tauruscanisrex.com"
+EMAIL_HOST_PASSWORD = "SenorCerdo2013!"
+EMAIL_USE_SSL = True
+

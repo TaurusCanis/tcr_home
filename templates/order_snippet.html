@@ -4,7 +4,13 @@
   <!-- Heading -->
   <div class="row">
     <h4 class="d-flex justify-content-between align-items-center mb-3">
-      <div class="text-muted"><span>Order ID: </span><span id="order_id">{{ order.id }}</span></div>
+      <div class="text-muted" style="display:none"><span>Order ID: </span><span id="order_id">{{ order.id }}</span>
+      </div>
+      <div>
+        {% if order.ordered %}
+        Confirmation Number: {{ order.ref_code }}
+        {% endif %}
+      </div>
     </h4>
   </div>
   <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -62,30 +68,35 @@
     </li>
     {% endif %}
   </ul>
+  {% if not order.ordered %}
   <div class="row justify-content-end">
     <a class='btn btn-primary float-right' href='/'>Continue shopping</a>
   </div>
+  {% endif %}
   <!-- Cart -->
 
-  {% if DISPLAY_COUPON_FORM %}
+  <!-- {% if DISPLAY_COUPON_FORM %} -->
   <!-- Promo code -->
-  <form class="card p-2" method="POST" action="{% url 'core:add_coupon' %}">
+  <!-- <form class="card p-2" method="POST" action="{% url 'core:add_coupon' %}">
     {% csrf_token %}
     <div class="input-group">
-      <!-- <input type="text" class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2"> -->
+      <input type="text" class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">
       {{ coupon_form.code }}
       <div class="input-group-append">
         <button class="btn btn-secondary btn-md waves-effect m-0" type="submit">Redeem</button>
       </div>
     </div>
-  </form>
+  </form> -->
 
-  {% endif %}
+  <!-- {% endif %} -->
   <!-- Promo code -->
 
   <!-- Customer Info -->
   <!-- <h4 class="d-flex justify-content-between align-items-center mb-3"> -->
   <div class="container">
+    <div class="row justify-content-center my-3">
+      <h3>Please confirm your shipping address is correct.</h3>
+    </div>
     <div class="row justify-content-center">
       <div class="col-6">
         <h5>Ship to:</h5>
@@ -116,11 +127,13 @@
         <h6 class="my-0" id="billing_country">{{ order.billing_address.country }}</h6>
       </div>
     </div>
-    <div class="row">
-      <div class="row justify-content-end">
-        <a class='btn btn-primary float-right' href='/checkout'>Edit Shipping or Billing Address</a>
-      </div>
+    {% if not order.ordered %}
+    <div class="row justify-content-center my-3">
+
+      <a class='btn btn-primary' href='/checkout'>Edit Shipping or Billing Address</a>
+
     </div>
+    {% endif %}
   </div>
   <!-- </h4> -->
   <!-- <h4 class="d-flex justify-content-between align-items-center mb-3">

@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -41,7 +42,6 @@
         height: 100vh;
       }
     }
-
   </style>
 </head>
 
@@ -52,14 +52,14 @@
 
   <div class="mt-5 pt-4">
     {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      {% endfor %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endfor %}
     {% endif %}
   </div>
 
@@ -72,77 +72,104 @@
 
 
 
-    <!--Footer-->
-    <footer class="page-footer text-center font-small mt-4 wow fadeIn">
+  <!--Footer-->
+  <footer class="page-footer text-center font-small mt-4 wow fadeIn">
 
 
 
-      <hr class="my-4">
+    <hr class="my-4">
 
-      <!-- Social icons -->
-      <div class="pb-4">
-        <a href="https://www.facebook.com/mdbootstrap" target="_blank">
-          <i class="fab fa-facebook-f mr-3"></i>
-        </a>
+    <!-- Social icons -->
+    <div class="pb-4">
+      <!-- <a href="https://www.facebook.com/mdbootstrap" target="_blank">
+        <i class="fab fa-facebook-f mr-3"></i>
+      </a> -->
 
-        <a href="https://twitter.com/MDBootstrap" target="_blank">
-          <i class="fab fa-twitter mr-3"></i>
-        </a>
+      <a href="https://twitter.com/tauruscanisrex" target="_blank">
+        <i class="fab fa-twitter mr-3"></i>
+      </a>
 
-        <a href="https://www.youtube.com/watch?v=7MUISDJ5ZZ4" target="_blank">
-          <i class="fab fa-youtube mr-3"></i>
-        </a>
+      <a href="https://www.youtube.com/channel/UC19FXeoeiKDIgx4wKUfDogA" target="_blank">
+        <i class="fab fa-youtube mr-3"></i>
+      </a>
 
-        <a href="https://plus.google.com/u/0/b/107863090883699620484" target="_blank">
-          <i class="fab fa-google-plus-g mr-3"></i>
-        </a>
+      <a href="https://tauruscanisrex.bandcamp.com/releases" target="_blank">
+        <i class="fab fa-bandcamp mr-3"></i>
+      </a>
 
-        <a href="https://dribbble.com/mdbootstrap" target="_blank">
-          <i class="fab fa-dribbble mr-3"></i>
-        </a>
+      <a href="https://open.spotify.com/artist/48IQELLVFZ9STS7WscCjdY" target="_blank">
+        <i class="fab fa-spotify mr-3"></i>
+      </a>
 
-        <a href="https://pinterest.com/mdbootstrap" target="_blank">
-          <i class="fab fa-pinterest mr-3"></i>
-        </a>
+      <a href="https://music.apple.com/us/album/corona-king-single/id1514137949" target="_blank">
+        <i class="fab fa-itunes mr-3"></i>
+      </a>
 
-        <a href="https://github.com/mdbootstrap/bootstrap-material-design" target="_blank">
-          <i class="fab fa-github mr-3"></i>
-        </a>
+      <a href="https://www.amazon.com/Corona-King-TaurusCanis-Rex/dp/B088TSNM2S" target="_blank">
+        <i class="fab fa-amazon mr-3"></i>
+      </a>
 
-        <a href="http://codepen.io/mdbootstrap/" target="_blank">
-          <i class="fab fa-codepen mr-3"></i>
-        </a>
-      </div>
-      <!-- Social icons -->
+      <!-- <a href="https://plus.google.com/u/0/b/107863090883699620484" target="_blank">
+        <i class="fab fa-google-plus-g mr-3"></i> -->
+      </a>
 
-      <!--Copyright-->
-      <div class="footer-copyright py-3">
-        © 2019 Copyright:
-        <a href="https://mdbootstrap.com/education/bootstrap/" target="_blank"> MDBootstrap.com </a>
-      </div>
-      <!--/.Copyright-->
+      <!-- <a href="https://dribbble.com/mdbootstrap" target="_blank">
+        <i class="fab fa-dribbble mr-3"></i> -->
+      </a>
 
-    </footer>
-    <!--/.Footer-->
+      <!-- <a href="https://pinterest.com/mdbootstrap" target="_blank">
+        <i class="fab fa-pinterest mr-3"></i> -->
+      </a>
 
-    <!-- SCRIPTS -->
-    <!-- JQuery -->
-    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-    <!-- Bootstrap tooltips -->
-    <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
-    <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-    <!-- MDB core JavaScript -->
-    <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
-    <!-- Initializations -->
-    <script type="text/javascript">
-      // Animations initialization
-      new WOW().init();
+      <!-- <a href="https://github.com/mdbootstrap/bootstrap-material-design" target="_blank">
+        <i class="fab fa-github mr-3"></i> -->
+      </a>
 
-    </script>
+      <!-- <a href="http://codepen.io/mdbootstrap/" target="_blank">
+        <i class="fab fa-codepen mr-3"></i> -->
+      </a>
+    </div>
+    <!-- Social icons -->
 
-    {% block extra_scripts %}
-    {% endblock extra_scripts %}
+    <!--Copyright-->
+    <div class="footer-copyright py-3">
+      © 2020 Copyright: LHWD, LLC
+      <!-- <a href="https://mdbootstrap.com/education/bootstrap/" target="_blank"> MDBootstrap.com </a> -->
+    </div>
+    <div>
+      <a href="{% url 'core:tandc' %}" target="_blank">Terms and Conditions</a>
+    </div>
+    <div>
+      <a href="{% url 'core:pp' %}" target="_blank">Privacy Policy</a>
+    </div>
+    <div>
+      <a href="{% url 'core:returns_policy' %}" target="_blank">Returns Policy</a>
+    </div>
+
+    <!--/.Copyright-->
+
+  </footer>
+  <!--/.Footer-->
+
+  <!-- SCRIPTS -->
+  <!-- JQuery -->
+  <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+  <!-- Initializations -->
+  <script type="text/javascript">
+    // Animations initialization
+    new WOW().init();
+
+  </script>
+
+  {% block extra_scripts %}
+  {% endblock extra_scripts %}
 
 </body>
+
 </html>

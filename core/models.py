@@ -60,6 +60,7 @@ class ItemVariant(models.Model):
     title = models.CharField(max_length=200)
     item = models.ForeignKey('Item', on_delete=models.CASCADE)
     printful_variant_id = models.IntegerField(blank=True, null=True)
+    printful_item_variant_id = models.IntegerField(blank=True, null=True)
     retail_price = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=2)
     sku = models.CharField(max_length=2000, blank=True, null=True)
     product_id = models.IntegerField(blank=True, null=True)
@@ -173,8 +174,8 @@ class Customer(models.Model):
     email_address = models.CharField(max_length=20, blank=True, null=True)
     # phone_number = models.CharField(max_length=20, blank=True, null=True)
 
-    def __str__(self):
-        return self.first_name + " " + self.last_name
+    # def __str__(self):
+    #     return self.first_name + " " + self.last_name
         # return self.first_name 
 
 class Address(models.Model):

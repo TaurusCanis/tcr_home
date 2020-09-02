@@ -15,6 +15,10 @@ import requests
 import json
 import base64
 from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from django.template.loader import get_template
+from django.core.mail import EmailMultiAlternatives
+
 
 import stripe
 import braintree
@@ -179,7 +183,13 @@ def is_valid_form(values):
 
 def order_confirmation_page(request):
     print("order_confirmation_page")
-    return render(request, "order_confirmation_page.html")
+    order_id = request.POST.get("order_id")
+
+    order = Order.objects.get(id = order_id)
+
+    send_confirmation_email(order)
+
+    return render(request, "order_confirmation_page.html", { "order": order })
 
 class CheckoutView(View):
     def get(self, *args, **kwargs):
@@ -320,7 +330,13 @@ class CheckoutView(View):
                         customer.save()
                         order.customer = customer
                         order.save()
-                    
+                    else:
+                        customer = Customer.objects.get(id = order.customer.id)
+                    shipping_address = order.shipping_address 
+
+                    if shipping_address is None:
+                        shipping_address = Address()
+
                     # customer_name = form.cleaned_data.get(
                     #     'customer_name')
                     shipping_address1 = form.cleaned_data.get(
@@ -333,18 +349,20 @@ class CheckoutView(View):
                     shipping_state = form.cleaned_data.get('shipping_state')
                     shipping_zip = form.cleaned_data.get('shipping_zip')
 
+                    print("ORDER.CUSTOMER: ", order.customer)
+
                     if is_valid_form([shipping_address1, shipping_country, shipping_zip]):
-                        shipping_address = Address(
-                            customer = order.customer,
-                            session_id=self.request.session['id'],
-                            street_address=shipping_address1,
-                            apartment_address=shipping_address2,
-                            state = shipping_state,
-                            city = shipping_city,
-                            country=shipping_country,
-                            zip=shipping_zip,
-                            address_type='S'
-                        )
+                        # shipping_address = Address(
+                        shipping_address.customer = customer
+                        shipping_address.session_id=self.request.session['id']
+                        shipping_address.street_address=shipping_address1
+                        shipping_address.apartment_address=shipping_address2
+                        shipping_address.state = shipping_state
+                        shipping_address.city = shipping_city
+                        shipping_address.country=shipping_country
+                        shipping_address.zip=shipping_zip
+                        shipping_address.address_type='S'
+                        # )
                         shipping_address.save()
 
                         
@@ -365,6 +383,11 @@ class CheckoutView(View):
                     'use_default_billing')
                 same_billing_address = form.cleaned_data.get(
                     'same_billing_address')
+
+                billing_address = order.billing_address 
+
+                if billing_address is None:
+                    billing_address = Address()
 
                 if same_billing_address:
                     billing_address = shipping_address
@@ -402,16 +425,16 @@ class CheckoutView(View):
                     billing_zip = form.cleaned_data.get('billing_zip')
 
                     if is_valid_form([billing_address1, billing_country, billing_zip]):
-                        billing_address = Address(
-                            customer = customer,
-                            session_id=self.request.session['id'],
-                            street_address=billing_address1,
-                            apartment_address=billing_address2,
-                            city = billing_city,
-                            country=billing_country,
-                            zip=billing_zip,
-                            address_type='B'
-                        )
+                        # billing_address = Address(
+                        billing_address.customer = customer
+                        billing_address.session_id=self.request.session['id']
+                        billing_address.street_address=billing_address1
+                        billing_address.apartment_address=billing_address2
+                        billing_address.city = billing_city
+                        billing_address.country=billing_country
+                        billing_address.zip=billing_zip
+                        billing_address.address_type='B'
+                        # )
                         billing_address.save()
 
                         order.billing_address = billing_address
@@ -562,16 +585,31 @@ class OrderConfirmation(View):
         return render(self.request, "order_confirmation.html", context)
 
 def send_confirmation_email(order):
-    try:
-        send_mail(
-            'Order Confirmation - TaurusCanisRex.com',
-            'Here is the message.',
-            'from@example.com',
-            ['to@example.com'],
-            fail_silently=False,
-        )
-    except:
-        pass
+    html_template = get_template("order_confirmation.html")
+
+    html_content = html_template.render({ "order": order })
+
+    # email = EmailMessage(
+    #     'Order Confirmation - TaurusCanis Rex',
+    #     "Message",
+    #     'admin@tauruscanisrex.com',
+    #     [order.customer.email_address],
+    #     reply_to=['admin@tauruscanisrex.com'],
+    #     # headers={'Message-ID': 'foo'},
+    #     html_message=html_content
+    # )
+    
+    # email.attach_alternative(html_content, "text/html")
+    # email.send()
+    send_mail(
+        'Order Confirmation - TaurusCanisRex.com',
+        'Here is the message.',
+        'admin@tauruscanisrex.com',
+        [order.customer.email_address],
+        fail_silently=False,
+        html_message=html_content
+    )
+    return
 
 def update_printful_order(order_id):
     printful_api_base = 'https://api.printful.com/'
@@ -926,19 +964,48 @@ class ItemDetailView(DetailView):
         print("post_request: ", self.request.POST)
         print("slug: ", slug)
         print("quantity: ", self.request.POST.get('quantity'))
-        print("selected_variant: ", self.request.POST.get('selected_variant'))
+        print("selected_variant_id: ", self.request.POST.get('selected_variant'))
         print("printful_product_id: ", self.request.POST.get('printful_product_id'))
         printful_product_id = self.request.POST.get('printful_product_id')
-        selected_variant = self.request.POST.get('selected_variant')
-        add_to_cart(self.request, slug=None, quantity=1, product_id=printful_product_id, variant_id=selected_variant)
+        selected_variant_id = self.request.POST.get('selected_variant')
+        quantity = int(self.request.POST.get('quantity'))
+        # item_variant_id = int(self.request.POST.get('item_variant_id'))
+        
+        print("QUANTITY: ", quantity)
+        quantity_count = quantity
+        print("Quantity Count: ", quantity_count)
+        for i in range(0, quantity):
+            add_to_cart(self.request, slug=None, item_variant_id=selected_variant_id, quantity=quantity_count, product_id=printful_product_id)
+            quantity_count -= 1
         return redirect("core:order_summary")
 
+def tandc(request):
+    return render(request, "tandc.html")
+
+def pp(request):
+    return render(request, "pp.html")
+
+def returns_policy(request): 
+    return render(request, "returns.html")
+
 # @login_required
-def add_to_cart(request, slug=None, quantity=1, product_id=None, variant_id=None):
+def add_to_cart(request, slug=None, item_variant_id=None, quantity=1, product_id=None, variant_id=None, printful_product_id=None):
     print("add to cart")
     if slug is None:
+        print("product_id: ", product_id)
+        print("variant_id: ", variant_id)
+        print("printful_product_id: ", printful_product_id)
         print("slug none")
-        item = get_object_or_404(ItemVariant, printful_variant_id=variant_id)
+        print("quantity: ", quantity)
+        
+        print("ITEM_VARIANT_ID: ", item_variant_id)
+        item =  get_object_or_404(ItemVariant, id=item_variant_id)
+        print("ITEM: ", item)
+        # else:
+        # if product_id:
+        #     item =  get_object_or_404(ItemVariant, item__printful_product_id=product_id, printful_variant_id=variant_id)
+        # else:
+        #     item = get_object_or_404(ItemVariant, item__printful_product_id=printful_product_id, printful_variant_id=variant_id)
         print("item: ", item)
         # print("request.user.id: ", request.user.id)
         print("session keys: ", request.session.keys())
@@ -960,20 +1027,25 @@ def add_to_cart(request, slug=None, quantity=1, product_id=None, variant_id=None
             print("existing order: ", order)
             if order.items.filter(item__printful_variant_id = item.printful_variant_id).exists():
                 print("order_item if: ", order_item)
-                order_item.quantity += quantity
+                order_item.quantity += 1
                 order_item.save()
-                messages.info(request, "This item quantity was update.")
-                return redirect("core:order_summary")
+                print("ALPHA")
+                if quantity == 1:
+                    messages.info(request, "This item quantity was updated.")
+                    return redirect("core:order_summary")
+                return
             else:
                 print("order_item else: ", order_item)
-                messages.info(request, "This item was added to your cart.")
+                if quantity == 1:
+                    messages.info(request, "This item was added to your cart.")
                 order.items.add(order_item)
                 order.save()
                 print("order: ", order)
                 print("order_item: ", order_item)
                 print("order_item: ", order_item.item.retail_price)
                 print("order.items: ", order.items)
-                return redirect("core:order_summary")
+                # return redirect("core:order_summary")
+                return
         else:
             print("order does not exist")
             ordered_date = timezone.now()
@@ -983,8 +1055,10 @@ def add_to_cart(request, slug=None, quantity=1, product_id=None, variant_id=None
             # order.session_id = request.session['id']
             order.save()
             print("session keys: ", request.session.keys())
-            messages.info(request, "This item was added to your cart.")
-            return redirect("core:order_summary")
+            if quantity == 1:
+                messages.info(request, "This item was added to your cart.")
+            # return redirect("core:order_summary")
+            return
 
     else:
         print("slug")
@@ -1000,24 +1074,29 @@ def add_to_cart(request, slug=None, quantity=1, product_id=None, variant_id=None
             if order.items.filter(item__slug = item.slug).exists():
                 order_item.quantity += 1
                 order_item.save()
-                messages.info(request, "This item quantity was update.")
-                return redirect("core:order_summary")
+                print("BETA")
+                messages.info(request, "This item quantity was updated.")
+                # return redirect("core:order_summary")
+                return
             else:
                 messages.info(request, "This item was added to your cart.")
                 order.items.add(order_item)
-                return redirect("core:order_summary")
+                # return redirect("core:order_summary")
+                return
         else:
             ordered_date = timezone.now()
             order = Order.objects.create(user=request.user, ordered_date=ordered_date)
             order.items.add(order_item)
             messages.info(request, "This item was added to your cart.")
-            return redirect("core:order_summary")
+            # return redirect("core:order_summary")
+            return
     print("done")
 
 # @login_required
-def remove_from_cart(request, slug=None, variant_id=None):
+def remove_from_cart(request, slug=None, item_variant_id=None):
     if slug is None:
-        item = get_object_or_404(ItemVariant, printful_variant_id=variant_id)
+        print("VARIANT_ID: ", item_variant_id)
+        item = get_object_or_404(ItemVariant, id=item_variant_id)
         order_qs = Order.objects.filter(
             session_id=request.session['id'],
             ordered=False
@@ -1070,10 +1149,10 @@ def remove_from_cart(request, slug=None, variant_id=None):
             return redirect("core:product", slug = slug)
 
 # @login_required
-def remove_single_item_from_cart(request, slug=None, variant_id=None):
-    print("variant_id: ", variant_id)
+def remove_single_item_from_cart(request, slug=None, item_variant_id=None, printful_product_id=None):
+    print("variant_id: ", item_variant_id)
     if slug is None:
-        item = get_object_or_404(ItemVariant, printful_variant_id=variant_id)
+        item = get_object_or_404(ItemVariant, id=item_variant_id)
         order_qs = Order.objects.filter(
             session_id=request.session['id'],
             ordered=False
@@ -1091,6 +1170,7 @@ def remove_single_item_from_cart(request, slug=None, variant_id=None):
                 else:
                     order.items.remove(order_item)
                 order_item.save()
+                print("GAMMA")
                 messages.info(request, "This item quantity was updated.")
                 return redirect("core:order_summary")
             else:
@@ -1121,6 +1201,7 @@ def remove_single_item_from_cart(request, slug=None, variant_id=None):
                 else:
                     order.items.remove(order_item)
                 order_item.save()
+                print("DELTA")
                 messages.info(request, "This item quantity was updated.")
                 return redirect("core:order_summary")
             else:

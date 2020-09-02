@@ -102,8 +102,32 @@
                     xml.onreadystatechange = function () {
                         if (xml.readyState === XMLHttpRequest.DONE) {
                             if (xml.status === 200) {
-                                url = JSON.parse(xml.responseText)["url"]
-                                window.location.href = "/" + url + "/"
+                                url = "/" + JSON.parse(xml.responseText)["url"] + "/"
+                                // window.location.href = "/" + url + "/"
+
+                                console.log("URL: ", url)
+
+                                var form = document.createElement('form');
+                                form.setAttribute('method', "post");
+                                form.setAttribute('action', url);
+
+                                var hiddenField = document.createElement('input');
+                                hiddenField.setAttribute('type', 'hidden');
+                                hiddenField.setAttribute('name', "order_id");
+                                hiddenField.setAttribute('value', document.querySelector("#order_id").innerHTML);
+
+                                var token = document.createElement('input');
+                                token.setAttribute('type', 'hidden');
+                                token.setAttribute('name', "csrfmiddlewaretoken");
+                                token.setAttribute('value', getCookie('csrftoken'));
+
+
+                                form.appendChild(hiddenField);
+                                form.appendChild(token);
+
+                                document.body.appendChild(form);
+                                form.submit();
+
                             } else {
                                 // There was a problem with the request.
                                 // For example, the response may have a 404 (Not Found)
