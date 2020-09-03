@@ -18,19 +18,13 @@ from .views import (
     order_confirmation_page,
     tandc,
     pp,
-    returns_policy,
-    parking_page
+    returns_policy
 )
-
-from django.conf import settings
-from django.conf.urls import url
-from django.views.static import serve
 
 app_name = 'core'
 
 urlpatterns = [
-    # path('', HomeView.as_view(), name='home'),
-    path('', parking_page, name='home'),
+    path('', HomeView.as_view(), name='home'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
     path('product/<slug>/', ItemDetailView.as_view(), name='product'),
     # path('add_to_cart/<slug>/', add_to_cart, name='add_to_cart'),
@@ -52,10 +46,4 @@ urlpatterns = [
     path('tandc/', tandc, name='tandc'),
     path('pp/', pp, name='pp'),
     path('returns_policy/', returns_policy, name='returns_policy')
-
-    
 ]
-
-url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
-
-url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),

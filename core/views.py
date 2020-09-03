@@ -23,8 +23,8 @@ from django.core.mail import EmailMultiAlternatives
 import stripe
 import braintree
 
-def parking_page(request):
-    return render(request, "parking_page.html")
+# def parking_page(request):
+#     return render(request, "parking_page.html")
 
 #BRAINTREE SANDBOX INTEGRATION
 gateway = braintree.BraintreeGateway(
