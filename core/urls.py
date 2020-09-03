@@ -22,6 +22,10 @@ from .views import (
     parking_page
 )
 
+from django.conf import settings
+from django.conf.urls import url
+from django.views.static import serve
+
 app_name = 'core'
 
 urlpatterns = [
@@ -48,4 +52,10 @@ urlpatterns = [
     path('tandc/', tandc, name='tandc'),
     path('pp/', pp, name='pp'),
     path('returns_policy/', returns_policy, name='returns_policy')
+
+    
 ]
+
+url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+
+url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
