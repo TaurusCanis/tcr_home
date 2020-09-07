@@ -63,7 +63,13 @@
         var deviceData;
         braintree.dropin.create({
             authorization: client_token_from_server,
-            container: '#dropin-container'
+            container: '#dropin-container',
+            venmo: {},
+            paypal: {
+                "flow": "checkout",
+                "amount": document.querySelector("#total_amount").innerHTML,
+                "currency": "USD"
+            }
         }, function (createErr, instance) {
             console.log("Inside create")
             console.log("instance: ", instance)

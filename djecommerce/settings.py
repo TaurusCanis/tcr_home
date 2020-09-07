@@ -47,7 +47,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                # 'django.contrib.messages.context_processors.messages',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -112,6 +112,10 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 STRIPE_PUBLIC_KEY = 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ'
 STRIPE_SECRET_KEY = 'sk_test_sYyZfPMDiefqOPb1I6yZvHzM00GXAujNFH'
+
+BRAINTREE_MERCHANT_ID = 'ypwk6jkdkhn6c3jx'
+BRAINTREE_PUBLIC_KEY = 'mrzs5jtfmvmkzkjv'
+BRAINTREE_PRIVATE_KEY = 'f49af70c2659139cf6cdf926b8fc253d'
 
 PRINTFUL_KEY = '6bhck2wu-onuj-xp2n:ltb0-wsfqq6pskkwe'
 
