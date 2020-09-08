@@ -169,8 +169,8 @@ class Order(models.Model):
         return round(total, 2)
 
 class Customer(models.Model):
-    first_name = models.CharField(max_length=20, blank=True, null=True)
-    last_name = models.CharField(max_length=20, blank=True, null=True)
+    first_name = models.CharField(max_length=40, blank=True, null=True)
+    last_name = models.CharField(max_length=40, blank=True, null=True)
     email_address = models.CharField(max_length=200, blank=True, null=True)
     # phone_number = models.CharField(max_length=20, blank=True, null=True)
 
@@ -183,8 +183,8 @@ class Address(models.Model):
     # customer_name = models.CharField(max_length=20, blank=True, null=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     session_id = models.CharField(max_length=20, blank=True, null=True)
-    street_address = models.CharField(max_length=100)
-    apartment_address = models.CharField(max_length=100)
+    street_address = models.CharField(max_length=200)
+    apartment_address = models.CharField(max_length=200)
     city = models.CharField(max_length=100)
     state = USStateField(default="CT")
     country = CountryField(multiple=False)
