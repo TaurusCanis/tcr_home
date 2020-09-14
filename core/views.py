@@ -283,6 +283,7 @@ class CheckoutView(View):
         context.update({ "form": form })
 
         print("checkout context: ", context)
+        print("CHECKOUT PAGE")
         return render(self.request, "checkout-page.html", context)
         
 

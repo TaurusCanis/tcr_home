@@ -21,11 +21,12 @@ class CheckoutForm(forms.Form):
     shipping_state = forms.CharField(widget=USStateSelect(attrs={
         'class': 'custom-select d-block w-100',
     }))
-    shipping_country = CountryField(blank_label='(select country)').formfield(
-        required=False,
-        widget=CountrySelectWidget(attrs={
-            'class': 'custom-select d-block w-100',
-        }))
+    # shipping_country = CountryField(blank_label='(select country)').formfield(
+    #     required=False,
+    #     widget=CountrySelectWidget(attrs={
+    #         'class': 'custom-select d-block w-100',
+    #     }))
+    shipping_country = forms.ChoiceField(choices=[("US", "USA")])
     shipping_zip = forms.CharField(required=False)
 
     # name = forms.CharField(required=False)
@@ -35,11 +36,12 @@ class CheckoutForm(forms.Form):
     billing_state = forms.CharField(widget=USStateSelect(attrs={
         'class': 'custom-select d-block w-100',
     }))
-    billing_country = CountryField(blank_label='(select country)').formfield(
-        required=False,
-        widget=CountrySelectWidget(attrs={
-            'class': 'custom-select d-block w-100',
-        }))
+    # billing_country = CountryField(blank_label='(select country)').formfield(
+    #     required=False,
+    #     widget=CountrySelectWidget(attrs={
+    #         'class': 'custom-select d-block w-100',
+    #     }))
+    billing_country = forms.ChoiceField(choices=[("US", "USA")])
     billing_zip = forms.CharField(required=False)
 
     same_billing_address = forms.BooleanField(required=False)
