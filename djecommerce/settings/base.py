@@ -1,7 +1,7 @@
 import os
 import django_heroku
 
-ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
 DEBUG = True
 # DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
