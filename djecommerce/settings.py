@@ -1,9 +1,9 @@
 import os
 import django_heroku
 
-ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
+# ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
 
-DEBUG = True
+# DEBUG = True
 # DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECRET_KEY = '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj'
@@ -65,15 +65,16 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
+# TEMPLATE_DIRS = (
+    # os.path.join(BASE_DIR, 'templates'),
     # Add to this list all the locations containing your static files 
-)
+# )
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 DATABASES = {
@@ -135,6 +136,6 @@ EMAIL_HOST_USER = "admin@tauruscanisrex.com"
 EMAIL_HOST_PASSWORD = "SenorCerdo2013!"
 EMAIL_USE_SSL = True
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 django_heroku.settings(locals())
