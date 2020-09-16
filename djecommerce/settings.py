@@ -177,4 +177,4 @@ EMAIL_USE_SSL = True
 
 
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
