@@ -928,7 +928,9 @@ class HomeView(View):
         # else:
         #     messages.warning(self.request, "You have not added a billing address")
         #     return redirect("core:checkout")
-        return render(self.request, "home-page.html", context)
+
+        return HttpResponse("Homepage")
+        # return render(self.request, "home-page.html", context)
     def post(self, *args, **kwargs):
         form = MailingListForm(self.request.POST)
         if form.is_valid():
