@@ -6,6 +6,13 @@ media
 *.sqlite3
 *.env
 
+###ADDED 9/16###
+/venv
+__pycache__
+db.sqlite3          
+static/
+####
+
 # Accept these files in the repository
 !.gitignore
 !.travis.yml
