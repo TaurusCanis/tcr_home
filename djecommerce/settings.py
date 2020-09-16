@@ -1,5 +1,5 @@
 import os
-import django_heroku
+# import django_heroku
 
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
 
