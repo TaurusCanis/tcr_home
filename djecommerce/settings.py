@@ -65,11 +65,12 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static'),
+# )
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
 
 MEDIA_URL = '/media/'
@@ -78,7 +79,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
     # os.path.join(BASE_DIR, 'templates'),
     # Add to this list all the locations containing your static files 
 # )
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # LOGGING = {
