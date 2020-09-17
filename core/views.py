@@ -106,13 +106,6 @@ def braintree_create_purchase(request):
             "merchant_account_id": "TaurusCanisRex_instant",
             "payment_method_nonce": nonce_from_the_client,
             "device_data": device_data_from_the_client,
-            "order_info": {
-                "order_id": order_id,
-                "tax": order.tax,
-                "shipping_cost": order.shipping_cost,
-                "subtotal": order.subtotal,
-                "grand_total": order.grand_total
-            },
             "customer": {
                 "first_name": body['customer']['first_name'],
                 "last_name": body['customer']['last_name'],
