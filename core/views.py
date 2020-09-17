@@ -26,15 +26,27 @@ import braintree
 # def parking_page(request):
 #     return render(request, "parking_page.html")
 
-#BRAINTREE SANDBOX INTEGRATION
+BRAINTREE SANDBOX INTEGRATION
 gateway = braintree.BraintreeGateway(
     braintree.Configuration(
         braintree.Environment.Sandbox,
-        merchant_id="wwy3t4hrktyrsdhj",
-        public_key="gdq835hnqc5xc6hz",
-        private_key="1324f8751a49d64be2313dbf79db5b6a"
+        merchant_id=settings.BRAINTREE_PRODUCTION_MERCHANT_ID,
+        public_key=settings.BRAINTREE_PRODUCTION_PUBLIC_KEY,
+        private_key=settings.BRAINTREE_PRODUCTION_PRIVATE_KEY
+        # merchant_id="wwy3t4hrktyrsdhj",
+        # public_key="gdq835hnqc5xc6hz",
+        # private_key="1324f8751a49d64be2313dbf79db5b6a"
     )
 )
+
+# gateway = braintree.BraintreeGateway(
+#     braintree.Configuration(
+#         braintree.Environment.Production,
+#         merchant_id=settings.BRAINTREE_PRODUCTION_MERCHANT_ID,
+#         public_key=settings.BRAINTREE_PRODUCTION_PUBLIC_KEY,
+#         private_key=settings.BRAINTREE_PRODUCTION_PRIVATE_KEY
+#     )
+# )
 
 def braintree_client_token(request):
     client_token = gateway.client_token.generate()
@@ -70,6 +82,15 @@ def braintree_create_purchase(request):
     shipping_country_code = body["shipping"]["country_code_alpha2"]
 
     order = Order.objects.get(session_id=request.session['id'], ordered=False)
+
+    order_items = []
+    for order_item in order.items:
+        order_items.append({
+            "product": order_item.title,
+            "product_variant_id": order_item.item.id,
+            "quantity": order_item.quantity,
+            "unit_price": order_item.item.retail_price
+        })
     print("post")
     try:
         ref_code = create_ref_code()
@@ -82,16 +103,23 @@ def braintree_create_purchase(request):
             "merchant_account_id": "TaurusCanisRex_instant",
             "payment_method_nonce": nonce_from_the_client,
             "device_data": device_data_from_the_client,
-            "order_id": order_id,
+            "order_info": {
+                "order_id": order_id,
+                "tax": order.tax,
+                "shipping_cost": order.shipping_cost,
+                "subtotal": order.subtotal,
+                "grand_total": order.grand_total
+            },
             # "customer": {
             #     "first_name": customer_first_name,
             #     "last_name": customer_last_name,
             #     "phone": customer_phone,
             #     "email": customer_email
             # },
+            "order_items": order_items,
             "billing": {
-                # "first_name": billing_first_name,
-                # "last_name": billing_last_name,
+                "first_name": billing_first_name,
+                "last_name": billing_last_name,
                 "street_address": billing_address,
                 "extended_address": billing_address_2,
                 "locality": billing_city,
@@ -100,8 +128,8 @@ def braintree_create_purchase(request):
                 "country_code_alpha2": billing_country_code
             },
             "shipping": {
-                # "first_name": shipping_first_name,
-                # "last_name": shipping_last_name,
+                "first_name": shipping_first_name,
+                "last_name": shipping_last_name,
                 "street_address": shipping_address,
                 "extended_address": shipping_address_2,
                 "locality": shipping_city,
@@ -152,13 +180,13 @@ def braintree_create_purchase(request):
         # Send email to self
         print("exception!!")
         print("error: ", e)
-        messages.warning(request, "An error has ocurred. We have been notified.")
+        messages.warning(request, "An error has ocurred. We have been notified. You have not been charged.")
         return redirect("/")
 
 
 #STRIPE INTEGRATION
 # stripe.api_key = settings.STRIPE_SECRET_KEY
-stripe.api_key = 'sk_test_sYyZfPMDiefqOPb1I6yZvHzM00GXAujNFH'
+# stripe.api_key = 'sk_test_sYyZfPMDiefqOPb1I6yZvHzM00GXAujNFH'
 
 store = settings.PRINTFUL_KEY
 
@@ -215,7 +243,7 @@ class CheckoutView(View):
             customer = Customer.objects.get(id = order.customer.id)
             print("customer: ", customer)
 
-            data = { 
+            data = {
                 "customer_id": customer.id,
                 "email_address": customer.email_address,
                 "first_name": customer.first_name,
@@ -228,13 +256,13 @@ class CheckoutView(View):
                     customer = customer
                     # default = True
                 )
-           
+
 
             print("shipping_address_qs: ", shipping_address_qs)
 
             if shipping_address_qs.exists():
                 # context.update({ 'default_shipping_address': shipping_address_qs[0] })
-                data.update({ 
+                data.update({
                     "shipping_address": shipping_address_qs[0].street_address,
                     "shipping_address2": shipping_address_qs[0].apartment_address,
                     "shipping_country": shipping_address_qs[0].country,
@@ -257,11 +285,11 @@ class CheckoutView(View):
                     customer = customer
                     # default = True
                 )
-            
+
 
             if billing_address_qs.exists():
                 # context.update({ 'default_billing_address': billing_address_qs[0] })
-                data.update({ 
+                data.update({
                     "billing_address": billing_address_qs[0].street_address,
                     "billing_address2": billing_address_qs[0].apartment_address,
                     "billing_country": billing_address_qs[0].country,
@@ -275,7 +303,7 @@ class CheckoutView(View):
             form = CheckoutForm(data)
             print("form is valid?: ", form.is_valid())
             print("form: ", form)
-        
+
         else:
             print("ELSE")
             form = CheckoutForm()
@@ -285,7 +313,7 @@ class CheckoutView(View):
         print("checkout context: ", context)
         print("CHECKOUT PAGE")
         return render(self.request, "checkout-page.html", context)
-        
+
 
     def post(self, *args, **kwargs):
         print('post')
@@ -323,9 +351,9 @@ class CheckoutView(View):
                     if order.customer is None:
                         customer = Customer(
                             first_name = form.cleaned_data.get(
-                            'first_name'), 
+                            'first_name'),
                             last_name = form.cleaned_data.get(
-                            'last_name'), 
+                            'last_name'),
                             email_address = form.cleaned_data.get(
                             'email_address'),
                             # phone_number = form.cleaned_data.get(
@@ -336,7 +364,7 @@ class CheckoutView(View):
                         order.save()
                     else:
                         customer = Customer.objects.get(id = order.customer.id)
-                    shipping_address = order.shipping_address 
+                    shipping_address = order.shipping_address
 
                     if shipping_address is None:
                         shipping_address = Address()
@@ -369,7 +397,7 @@ class CheckoutView(View):
                         # )
                         shipping_address.save()
 
-                        
+
                         order.shipping_address = shipping_address
                         order.save()
 
@@ -388,7 +416,7 @@ class CheckoutView(View):
                 same_billing_address = form.cleaned_data.get(
                     'same_billing_address')
 
-                billing_address = order.billing_address 
+                billing_address = order.billing_address
 
                 if billing_address is None:
                     billing_address = Address()
@@ -602,7 +630,7 @@ def send_confirmation_email(order):
     #     # headers={'Message-ID': 'foo'},
     #     html_message=html_content
     # )
-    
+
     # email.attach_alternative(html_content, "text/html")
     # email.send()
     send_mail(
@@ -976,7 +1004,7 @@ class ItemDetailView(DetailView):
         selected_variant_id = self.request.POST.get('selected_variant')
         quantity = int(self.request.POST.get('quantity'))
         # item_variant_id = int(self.request.POST.get('item_variant_id'))
-        
+
         print("QUANTITY: ", quantity)
         quantity_count = quantity
         print("Quantity Count: ", quantity_count)
@@ -991,7 +1019,7 @@ def tandc(request):
 def pp(request):
     return render(request, "pp.html")
 
-def returns_policy(request): 
+def returns_policy(request):
     return render(request, "returns.html")
 
 # @login_required
@@ -1003,7 +1031,7 @@ def add_to_cart(request, slug=None, item_variant_id=None, quantity=1, product_id
         print("printful_product_id: ", printful_product_id)
         print("slug none")
         print("quantity: ", quantity)
-        
+
         print("ITEM_VARIANT_ID: ", item_variant_id)
         item =  get_object_or_404(ItemVariant, id=item_variant_id)
         print("ITEM: ", item)
