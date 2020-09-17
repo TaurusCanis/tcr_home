@@ -26,7 +26,7 @@ import braintree
 # def parking_page(request):
 #     return render(request, "parking_page.html")
 
-BRAINTREE SANDBOX INTEGRATION
+# BRAINTREE SANDBOX INTEGRATION
 gateway = braintree.BraintreeGateway(
     braintree.Configuration(
         braintree.Environment.Sandbox,
