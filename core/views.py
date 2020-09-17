@@ -87,7 +87,7 @@ def braintree_create_purchase(request):
     line_items = []
     for order_item in items_in_order:
         line_items.append({
-            "kind": debit,
+            "kind": 'debit',
             "name": order_item.item.title,
             "product_code": order_item.item.id,
             "quantity": order_item.quantity,
