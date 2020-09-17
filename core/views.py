@@ -510,6 +510,10 @@ class CheckoutView(View):
 
 class PaymentView(View):
     def get(self, *args, **kwargs):
+        print("merchant_id= ", settings.BRAINTREE_SANDBOX_MERCHANT_ID)
+        print("public_key= ", settings.BRAINTREE_SANDBOX_PUBLIC_KEY)
+        print("private_key= ", settings.BRAINTREE_SANDBOX_PRIVATE_KEY)
+        
         order = Order.objects.get(session_id=self.request.session['id'], ordered=False)
         if order.billing_address:
             context = {
