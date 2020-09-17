@@ -82,9 +82,10 @@ def braintree_create_purchase(request):
     shipping_country_code = body["shipping"]["country_code_alpha2"]
 
     order = Order.objects.get(session_id=request.session['id'], ordered=False)
+    items_in_order = OrderItems.objects.filter(session_id=order.session_id)
 
     order_items = []
-    for order_item in order.items:
+    for order_item in items_in_order:
         order_items.append({
             "product": order_item.title,
             "product_variant_id": order_item.item.id,
@@ -513,7 +514,7 @@ class PaymentView(View):
         print("merchant_id= ", settings.BRAINTREE_SANDBOX_MERCHANT_ID)
         print("public_key= ", settings.BRAINTREE_SANDBOX_PUBLIC_KEY)
         print("private_key= ", settings.BRAINTREE_SANDBOX_PRIVATE_KEY)
-        
+
         order = Order.objects.get(session_id=self.request.session['id'], ordered=False)
         if order.billing_address:
             context = {
