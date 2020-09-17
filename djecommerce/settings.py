@@ -81,7 +81,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
     # os.path.join(BASE_DIR, 'templates'),
     # Add to this list all the locations containing your static files 
 # )
-# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # LOGGING = {
