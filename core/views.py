@@ -87,7 +87,7 @@ def braintree_create_purchase(request):
     order_items = []
     for order_item in items_in_order:
         order_items.append({
-            "product": order_item.title,
+            "product": order_item.item.title,
             "product_variant_id": order_item.item.id,
             "quantity": order_item.quantity,
             "unit_price": order_item.item.retail_price
