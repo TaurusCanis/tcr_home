@@ -119,8 +119,8 @@ def braintree_create_purchase(request):
             # },
             "order_items": order_items,
             "billing": {
-                "first_name": billing_first_name,
-                "last_name": billing_last_name,
+                # "first_name": billing_first_name,
+                # "last_name": billing_last_name,
                 "street_address": billing_address,
                 "extended_address": billing_address_2,
                 "locality": billing_city,
@@ -129,8 +129,8 @@ def braintree_create_purchase(request):
                 "country_code_alpha2": billing_country_code
             },
             "shipping": {
-                "first_name": shipping_first_name,
-                "last_name": shipping_last_name,
+                # "first_name": shipping_first_name,
+                # "last_name": shipping_last_name,
                 "street_address": shipping_address,
                 "extended_address": shipping_address_2,
                 "locality": shipping_city,
