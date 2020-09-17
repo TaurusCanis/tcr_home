@@ -130,6 +130,7 @@ class Order(models.Model):
     payment = models.ForeignKey(
         "Payment", on_delete=models.SET_NULL, blank=True, null=True
     )
+    braintree_transaction_id = models.CharField(max_length=100, default="0")
     coupon = models.ForeignKey("Coupon", on_delete=models.SET_NULL, blank=True, null=True)
     being_delivered = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
@@ -206,8 +207,6 @@ class Payment(models.Model):
     session_id = models.CharField(max_length=20, blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    braintree_transaction_id = models.CharField(max_length=100)
 
     # def __str__(self):
     #     return self.session_id
