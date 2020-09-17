@@ -144,6 +144,8 @@ def braintree_create_purchase(request):
             # payment.stripe_charge_id = charge['id'] #he used charge['id']
             payment.session_id = request.session['id']
             payment.amount = order.get_total()
+            order = order
+            braintree_transaction_id = result["transaction"]["id"]
             payment.save()
             print("payment")
 
@@ -168,6 +170,10 @@ def braintree_create_purchase(request):
             print("successful_order: ", successful_order)
             successful_order.ordered = True
             successful_order.save()
+
+            request.session['id'] = None
+            request.session.modified = True
+            
             return JsonResponse({ "url": "order_confirmation_page" })
         else:
             print("error")
