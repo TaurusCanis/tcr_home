@@ -140,15 +140,12 @@ def braintree_create_purchase(request):
 
         if result.is_success:
             #create payment
-            braintree_result = result.transaction[0]
             payment = Payment()
             # payment.stripe_charge_id = charge['id'] #he used charge['id']
             payment.session_id = request.session['id']
             payment.amount = order.get_total()
             order = order
-            print("braintree_result: ", braintree_result)
-            braintree_result_json = json.loads(braintree_result)
-            braintree_transaction_id = braintree_result_json["id"]
+            braintree_transaction_id = result.transaction.id
             payment.save()
             print("payment")
 
