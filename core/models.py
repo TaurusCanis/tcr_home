@@ -130,7 +130,7 @@ class Order(models.Model):
     payment = models.ForeignKey(
         "Payment", on_delete=models.SET_NULL, blank=True, null=True
     )
-    braintree_transaction_id = models.CharField(max_length=100, default="0")
+    braintree_transaction_id = models.CharField(max_length=100, default="0", null=True, blank=True)
     coupon = models.ForeignKey("Coupon", on_delete=models.SET_NULL, blank=True, null=True)
     being_delivered = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
