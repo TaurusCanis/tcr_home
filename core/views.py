@@ -140,7 +140,7 @@ def braintree_create_purchase(request):
 
         if result.is_success:
             #create payment
-            braintree_result = result.transaction
+            braintree_result = result.transaction[0]
             payment = Payment()
             # payment.stripe_charge_id = charge['id'] #he used charge['id']
             payment.session_id = request.session['id']
