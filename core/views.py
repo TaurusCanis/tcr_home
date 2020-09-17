@@ -146,7 +146,9 @@ def braintree_create_purchase(request):
             payment.session_id = request.session['id']
             payment.amount = order.get_total()
             order = order
-            braintree_transaction_id = braintree_result["transaction"]["id"]
+            print("braintree_result: ", braintree_result)
+            braintree_result_json = json.loads(braintree_result)
+            braintree_transaction_id = braintree_result_json["id"]
             payment.save()
             print("payment")
 
