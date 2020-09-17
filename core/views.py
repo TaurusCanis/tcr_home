@@ -82,7 +82,7 @@ def braintree_create_purchase(request):
     shipping_country_code = body["shipping"]["country_code_alpha2"]
 
     order = Order.objects.get(session_id=request.session['id'], ordered=False)
-    items_in_order = OrderItems.objects.filter(session_id=order.session_id)
+    items_in_order = OrderItem.objects.filter(session_id=order.session_id)
 
     order_items = []
     for order_item in items_in_order:
