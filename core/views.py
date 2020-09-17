@@ -84,13 +84,15 @@ def braintree_create_purchase(request):
     order = Order.objects.get(session_id=request.session['id'], ordered=False)
     items_in_order = OrderItem.objects.filter(session_id=order.session_id)
 
-    order_items = []
+    line_items = []
     for order_item in items_in_order:
-        order_items.append({
-            "product": order_item.item.title,
-            "product_variant_id": order_item.item.id,
+        line_items.append({
+            "kind": debit,
+            "name": order_item.item.title,
+            "product_code": order_item.item.id,
             "quantity": order_item.quantity,
-            "unit_price": order_item.item.retail_price
+            "unit_amount": order_item.item.retail_price,
+            "total_amount": order_item.quantity * order_item.item.retail_price
         })
     print("post")
     try:
@@ -111,13 +113,13 @@ def braintree_create_purchase(request):
                 "subtotal": order.subtotal,
                 "grand_total": order.grand_total
             },
-            # "customer": {
-            #     "first_name": customer_first_name,
-            #     "last_name": customer_last_name,
-            #     "phone": customer_phone,
-            #     "email": customer_email
-            # },
-            "order_items": order_items,
+            "customer": {
+                "first_name": body['customer']['first_name'],
+                "last_name": body['customer']['last_name'],
+                # "phone": customer_phone,
+                "email": body['customer']['email_address']
+            },
+            "line_items": line_items,
             "billing": {
                 # "first_name": billing_first_name,
                 # "last_name": billing_last_name,

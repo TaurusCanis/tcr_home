@@ -151,9 +151,11 @@
                                 "amount": document.querySelector("#total_amount").innerHTML,
                                 "device_data_from_the_client": deviceData,
                                 "order_id": document.querySelector("#order_id").innerHTML,
-                                // "customer": {
-
-                                // },
+                                "customer": {
+                                    "first_name": "{{ order.customer.first_name }}",
+                                    "last_name": "{{ order.customer.last_name }}",
+                                    "email_address": "{{ order.customer.email_address }}"
+                                },
                                 "billing": {
                                     "street_address": document.querySelector("#billing_street_address").innerHTML,
                                     "extended_address": document.querySelector("#billing_street_address_2").innerHTML,
