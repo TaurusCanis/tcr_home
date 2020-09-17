@@ -135,6 +135,7 @@ class Order(models.Model):
     received = models.BooleanField(default=False)
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
+    donation_added = models.BooleanField(default=False)
 
     # 1. Item added to cart
     # 2. Adding billing address
