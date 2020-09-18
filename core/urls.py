@@ -16,6 +16,7 @@ from .views import (
     braintree_client_token,
     braintree_create_purchase,
     order_confirmation_page,
+    error_page,
     tandc,
     pp,
     returns_policy
@@ -43,6 +44,7 @@ urlpatterns = [
     path('braintree_client_token/', braintree_client_token, name='braintree_client_token'),
     path('braintree_create_purchase/', braintree_create_purchase, name='braintree_create_purchase'),
     path('order_confirmation_page/', order_confirmation_page, name='order_confirmation_page'),
+    path('error_page/', error_page, name='error_page'),
     path('tandc/', tandc, name='tandc'),
     path('pp/', pp, name='pp'),
     path('returns_policy/', returns_policy, name='returns_policy')
