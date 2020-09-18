@@ -970,6 +970,7 @@ class HomeView(View):
         print("form: ", form)
         if form.is_valid():
             try:
+                print("valid")
                 first_name = form.cleaned_data('first_name')
                 email_address = form.cleaned_data('email_address')
                 new_subscriber = MailingListSubscriber(first_name, email_address)
