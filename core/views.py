@@ -228,17 +228,17 @@ def order_confirmation_page(request):
     return render(request, "order_confirmation_page.html", { "order": order })
 
 def error_page(request):
-    order = Order.objects.get(session_id=self.request.session['id'], ordered=False)
+    order = Order.objects.get(session_id=request.session['id'], ordered=False)
     if order.billing_address:
         context = {
             'order': order,
             'DISPLAY_COUPON_FORM': False,
             # 'stripe_key': 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ'
         }
-        messages.warning(self.request, "There was an error with your payment method. You have not been charged. Please try again")
-        return render(self.request, "payment.html", context)
+        messages.warning(request, "There was an error with your payment method. You have not been charged. Please try again")
+        return render(request, "payment.html", context)
     else:
-        messages.warning(self.request, "You have not added a billing address")
+        messages.warning(request, "You have not added a billing address")
         return redirect("core:checkout")
 
 class CheckoutView(View):
