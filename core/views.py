@@ -112,6 +112,10 @@ def braintree_create_purchase(request):
                 "email": body['customer']['email_address']
             },
             "line_items": line_items,
+            "custom_fields": {
+                "tcr_order_ref_number": ref_code
+            }
+
             "billing": {
                 # "first_name": billing_first_name,
                 # "last_name": billing_last_name,
