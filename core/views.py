@@ -83,6 +83,7 @@ def braintree_create_purchase(request):
 
     order = Order.objects.get(session_id=request.session['id'], ordered=False)
     items_in_order = OrderItem.objects.filter(session_id=order.session_id)
+    print("ITEMS_IN_ORDER****: ", items_in_order)
 
     line_items = []
     for order_item in items_in_order:
@@ -151,8 +152,10 @@ def braintree_create_purchase(request):
 
             #assign payment to order
 
-            order_items = order.items.all()
+            order_items = order.items.filter(session_id = request.session["id"])
+            print("ORDER_ITEMS: ", order_items)
             order_items.update(ordered=True)
+            print("ORDER_ITEMS: ", order_items)
             for item in order_items:
                 item.save()
 
@@ -171,8 +174,10 @@ def braintree_create_purchase(request):
             successful_order.ordered = True
             successful_order.save()
 
-            request.session['id'] = None
-            request.session.modified = True
+            # print("request.session['id']: ", request.session['id'])
+            # request.session['id'] = None
+            # request.session.modified = True
+            request.session.flush()
 
             return JsonResponse({ "url": "order_confirmation_page" })
         else:
@@ -488,9 +493,12 @@ class CheckoutView(View):
                 print("order items: ", order.items)
                 # print("billing_address: ", billing_address)
 
+                print("order.printful_order_id: ", order.printful_order_id)
                 if order.printful_order_id is not None:
-                    create_printful_order(order, shipping_address)
+                    res = create_printful_order(order, shipping_address)
+                    print("create_printful_order RES: ", res)
                 else:
+                    print("printful order exists")
                     # update_printful_order()
                     pass
                 # payment_option = form.cleaned_data.get('payment_option')
@@ -569,6 +577,15 @@ class PaymentView(View):
                 order.ref_code = ref_code
                 order.save()
                 print("save")
+
+                # self.request.session['id'] = None 
+                # request.session.modified = True
+
+                # print("request.session['id']: ", request.session['id'])
+                # request.session['id'] = None
+                # request.session.modified = True
+                # request.session.flush()
+                # print("request.session['id']: ", request.session['id'])
 
                 # update_printful_order(order.printful_order_id)
                 # send_confirmation_email(order)
@@ -730,7 +747,7 @@ def get_orders():
     print("response.json()['result']: ", response.json()['result'])
     return data
 
-def create_printful_order(order, billing_address):
+def create_printful_order(order, shipping_address):
 
 # def create_printful_order(order):
     ''' This function submits a printful order '''
@@ -763,12 +780,12 @@ def create_printful_order(order, billing_address):
 
     order_json = {
         "recipient": {
-            "name": billing_address.customer.first_name + " " + billing_address.customer.first_name,
-            "address1": billing_address.street_address,
-            "city": "New Canaan",
-            "state_code": billing_address.state,
-            "country_code": billing_address.country.code,
-            "zip": billing_address.zip
+            "name": shipping_address.customer.first_name + " " + shipping_address.customer.last_name,
+            "address1": shipping_address.street_address,
+            "city": shipping_address.city,
+            "state_code": shipping_address.state,
+            "country_code": shipping_address.country.code,
+            "zip": shipping_address.zip
         },
         "items": [{
         #     "variant_id": 192,
@@ -783,22 +800,24 @@ def create_printful_order(order, billing_address):
     }
 
     for order_item in order.items.all():
-        print("order_items: ", order_item)
-        new_order_item = {
-            "variant_id": order_item.item.printful_variant_id,
-            "quantity": order_item.quantity,
-            "name": order_item.item.title,
-            "retail_price": float(order_item.item.retail_price), #changed this on 8/22 is float ok compared to Decimal???
-            "files": []
-        }
-        for file in order_item.item.itemvariantfiles_set.all():
-            print("file_id: ", file.file_id)
-            print("file_id: ", file.url)
-            new_order_item['files'].append({
-                "id": file.file_id,
-                "url": file.url
-            })
-        order_json['items'].append(new_order_item)
+        print("order_items: ", order_item.item)
+        if order_item.item.item.category is not "T":
+            print("order_items NOT Tip: ", order_item.item)
+            new_order_item = {
+                "variant_id": order_item.item.printful_variant_id,
+                "quantity": order_item.quantity,
+                "name": order_item.item.title,
+                "retail_price": float(order_item.item.retail_price), #changed this on 8/22 is float ok compared to Decimal???
+                "files": []
+            }
+            for file in order_item.item.itemvariantfiles_set.all():
+                print("file_id: ", file.file_id)
+                print("file_id: ", file.url)
+                new_order_item['files'].append({
+                    "id": file.file_id,
+                    "url": file.url
+                })
+            order_json['items'].append(new_order_item)
 
     print("order_json: ", order_json)
 
@@ -1074,8 +1093,10 @@ def add_donation_to_cart(request, slug, donation_amount):
     item.retail_price = donation_amount
     item.save()
     quantity = 1
-    if 'id' not in request.session:
-            request.session['id'] = create_session_id()
+    if 'id' not in request.session or request.session['id'] is None:
+        request.session['id'] = create_session_id()
+        request.session.modified = True
+        print("request.session['id']: ", request.session['id'])
     order_item, created = OrderItem.objects.get_or_create(
         item=item,
         session_id = request.session['id'],
@@ -1138,6 +1159,7 @@ def returns_policy(request):
 
 # @login_required
 def add_to_cart(request, slug=None, item_variant_id=None, quantity=1, product_id=None, variant_id=None, printful_product_id=None):
+    # print("request.session['id']: ", request.session['id'])
     print("add to cart")
     if slug is None:
         print("product_id: ", product_id)
@@ -1159,13 +1181,19 @@ def add_to_cart(request, slug=None, item_variant_id=None, quantity=1, product_id
         print("session keys: ", request.session.keys())
         # print("request.session['id']: ", request.session['id'])
         # print("session id: ", request.session.id)
-        if 'id' not in request.session:
+        # if 'id' not in request.session:
+        #     request.session['id'] = create_session_id()
+        if 'id' not in request.session or request.session['id'] is None:
+            print("NOOONNNNNEEE")
             request.session['id'] = create_session_id()
+            request.session.modified = True
+            print("request.session['id']: ", request.session['id'])
         order_item, created = OrderItem.objects.get_or_create(
             item=item,
             session_id = request.session['id'],
             ordered = False
         )
+        print("ORDER_ITEM*****: ", order_item, " CREATED: ", created)
         print("keys: ", request.session.keys())
         order_qs = Order.objects.filter(session_id = request.session['id'], ordered=False)
         if order_qs.exists():
@@ -1198,7 +1226,9 @@ def add_to_cart(request, slug=None, item_variant_id=None, quantity=1, product_id
             print("order does not exist")
             ordered_date = timezone.now()
             order = Order.objects.create(session_id = request.session['id'], ordered_date=ordered_date)
+            print("ORDER_ITEM: ", order_item)
             order.items.add(order_item)
+            print("order.items: ", order.items)
             # request.session['id'] = create_session_id()
             # order.session_id = request.session['id']
             order.save()

@@ -8,6 +8,11 @@ def make_refund_accepted(modeladmin, request, queryset):
 make_refund_accepted.short_description = 'Update orders to refund granted'
 
 class OrderAdmin(admin.ModelAdmin):
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "items":
+            kwargs["queryset"] = OrderItem.objects.filter(session_id=self.session_id)
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
     list_display = ['customer',
         'session_id',
         'ordered',
