@@ -58,10 +58,12 @@
       <strong>$<span id="total_amount">{{ order.get_total }}</span></strong>
     </li>
     {% else %}
-    <li class="list-group-item d-flex justify-content-between">
+    {% comment %}
+    <!-- <li class="list-group-item d-flex justify-content-between">
       <span>Shipping (USD)</span>
       <strong>Calculated at Checkout</strong>
-    </li>
+    </li> -->
+    {% endcomment %}
     <li class="list-group-item d-flex justify-content-between">
       <span>Subtotal (USD)</span>
       <strong>$<span id="total_amount">{{ order.get_total }}</span></strong>
