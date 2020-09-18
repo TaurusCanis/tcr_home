@@ -44,7 +44,7 @@
                         {% csrf_token %}
                         <div class="d-flex justify-content-between">
                             <input type="hidden" value="{{ object.printful_product_id }}" name="printful_product_id">
-                            <label for="donation_amount">Donation Amount: $</label>
+                            <label for="donation_amount">Tip Amount: $</label>
                             <input name="donation_amount" type="number" value="10.00" aria-label="Search"
                                 class="form-control" style="width: 100px">
                         </div>
@@ -80,6 +80,7 @@
 
         <hr>
 
+        {% if object.description %}
         <!--Grid row-->
         <div class="row d-flex justify-content-center wow fadeIn">
 
@@ -98,38 +99,39 @@
 
         </div>
         <!--Grid row-->
+        {% endif %}
 
         <!--Grid row-->
-        <div class="row wow fadeIn">
+        <!-- <div class="row wow fadeIn"> -->
 
-            <!--Grid column-->
-            <div class="col-lg-4 col-md-12 mb-4">
+        <!--Grid column-->
+        <!-- <div class="col-lg-4 col-md-12 mb-4"> -->
 
-                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid"
-                    alt="">
+        <!-- <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid" -->
+        <!-- alt=""> -->
 
-            </div>
-            <!--Grid column-->
+        <!-- </div> -->
+        <!--Grid column-->
 
-            <!--Grid column-->
-            <div class="col-lg-4 col-md-6 mb-4">
+        <!--Grid column-->
+        <!-- <div class="col-lg-4 col-md-6 mb-4"> -->
 
-                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid"
-                    alt="">
+        <!-- <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid" -->
+        <!-- alt=""> -->
 
-            </div>
-            <!--Grid column-->
+        <!-- </div> -->
+        <!--Grid column-->
 
-            <!--Grid column-->
-            <div class="col-lg-4 col-md-6 mb-4">
+        <!--Grid column-->
+        <!-- <div class="col-lg-4 col-md-6 mb-4"> -->
 
-                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid"
-                    alt="">
+        <!-- <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid" -->
+        <!-- alt=""> -->
 
-            </div>
-            <!--Grid column-->
+        <!-- </div> -->
+        <!--Grid column-->
 
-        </div>
+        <!-- </div> -->
         <!--Grid row-->
 
     </div>
