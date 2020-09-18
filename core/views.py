@@ -34,7 +34,7 @@ import braintree
 #         public_key=settings.BRAINTREE_SANDBOX_PUBLIC_KEY,
 #         private_key=settings.BRAINTREE_SANDBOX_PRIVATE_KEY
 #     )
-)
+# )
 
 # Braintree Production Integration
 gateway = braintree.BraintreeGateway(
