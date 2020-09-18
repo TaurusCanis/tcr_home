@@ -996,9 +996,43 @@ class OrderSummaryView(View):
             messages.warning(self.request, "You do not have an active order")
             return redirect("/")
 
+# class ItemDetailView(DetailView):
+#     model = Item
+#     template_name = "product-page.html"
+
+#     def post(self, request, slug):
+#         print("post_request: ", self.request.POST)
+#         print("slug: ", slug)
+#         print("quantity: ", self.request.POST.get('quantity'))
+#         print("selected_variant_id: ", self.request.POST.get('selected_variant'))
+#         print("printful_product_id: ", self.request.POST.get('printful_product_id'))
+#         printful_product_id = self.request.POST.get('printful_product_id')
+#         selected_variant_id = self.request.POST.get('selected_variant')
+#         quantity = int(self.request.POST.get('quantity'))
+#         # item_variant_id = int(self.request.POST.get('item_variant_id'))
+
+#         print("QUANTITY: ", quantity)
+#         quantity_count = quantity
+#         print("Quantity Count: ", quantity_count)
+#         for i in range(0, quantity):
+#             add_to_cart(self.request, slug=None, item_variant_id=selected_variant_id, quantity=quantity_count, product_id=printful_product_id)
+#             quantity_count -= 1
+#         return redirect("core:order_summary")
+
 class ItemDetailView(DetailView):
-    model = Item
-    template_name = "product-page.html"
+    # model = Item
+    # template_name = "product-page.html"
+
+    def get(self, request, slug):
+        item = Item.objects.get(slug=slug)
+        print("item: ", item)
+        context = {
+            "object": item
+        }
+        if item.category == "D":
+            return render(self.request, "donation-page.html", context)
+        else:
+            return render(self.request, "product-page.html", context)
 
     def post(self, request, slug):
         print("post_request: ", self.request.POST)
@@ -1006,18 +1040,83 @@ class ItemDetailView(DetailView):
         print("quantity: ", self.request.POST.get('quantity'))
         print("selected_variant_id: ", self.request.POST.get('selected_variant'))
         print("printful_product_id: ", self.request.POST.get('printful_product_id'))
-        printful_product_id = self.request.POST.get('printful_product_id')
-        selected_variant_id = self.request.POST.get('selected_variant')
-        quantity = int(self.request.POST.get('quantity'))
-        # item_variant_id = int(self.request.POST.get('item_variant_id'))
 
-        print("QUANTITY: ", quantity)
-        quantity_count = quantity
-        print("Quantity Count: ", quantity_count)
-        for i in range(0, quantity):
-            add_to_cart(self.request, slug=None, item_variant_id=selected_variant_id, quantity=quantity_count, product_id=printful_product_id)
-            quantity_count -= 1
+        if slug == "leave_a_tip":
+            donation_amount = self.request.POST.get('donation_amount')
+            add_donation_to_cart(self.request, slug=slug, donation_amount=donation_amount) 
+        else:
+            printful_product_id = self.request.POST.get('printful_product_id')
+            selected_variant_id = self.request.POST.get('selected_variant')
+            quantity = int(self.request.POST.get('quantity'))
+            # item_variant_id = int(self.request.POST.get('item_variant_id'))
+            
+            print("QUANTITY: ", quantity)
+            quantity_count = quantity
+            print("Quantity Count: ", quantity_count)
+            for i in range(0, quantity):
+                add_to_cart(self.request, slug=None, item_variant_id=selected_variant_id, quantity=quantity_count, product_id=printful_product_id)
+                quantity_count -= 1
         return redirect("core:order_summary")
+
+def add_donation_to_cart(request, slug, donation_amount):
+    item = get_object_or_404(ItemVariant, item__slug=slug)
+    print("item: ", item)
+    print("donation_amount: ", donation_amount)
+    item.retail_price = donation_amount
+    item.save()
+    quantity = 1
+    if 'id' not in request.session:
+            request.session['id'] = create_session_id()
+    order_item, created = OrderItem.objects.get_or_create(
+        item=item,
+        session_id = request.session['id'],
+        ordered = False
+    )
+    print("order_item: ", order_item, " created: ", created)
+    print("keys: ", request.session.keys())
+    order_qs = Order.objects.filter(session_id = request.session['id'], ordered=False)
+    print("order_qs: ", order_qs)
+    if order_qs.exists():
+        print("session keys: ", request.session.keys())
+        print("order exists")
+        order = order_qs[0]
+        print("existing order: ", order)
+        if order.items.filter(item__title = "Donation").exists():
+            print("order_item if: ", order_item)
+            order_item.quantity += 1
+            order_item.save()
+            print("ALPHA")
+            if quantity == 1:
+                messages.info(request, "This item quantity was updated.")
+                return redirect("core:order_summary")
+            return
+        else:
+            print("order_item else: ", order_item)
+            if quantity == 1:
+                messages.info(request, "This item was added to your cart.")
+            order.items.add(order_item)
+            order.donation_added = True
+            order.save()
+            print("order: ", order)
+            print("order_item: ", order_item)
+            print("order_item: ", order_item.item.retail_price)
+            print("order.items: ", order.items)
+            # return redirect("core:order_summary")
+            return
+    else:
+        print("order does not exist")
+        ordered_date = timezone.now()
+        order = Order.objects.create(session_id = request.session['id'], ordered_date=ordered_date)
+        order.items.add(order_item)
+        # request.session['id'] = create_session_id()
+        # order.session_id = request.session['id']
+        order.save()
+        print("session keys: ", request.session.keys())
+        if quantity == 1:
+            messages.info(request, "This item was added to your cart.")
+        # return redirect("core:order_summary")
+        return
+    return 
 
 def tandc(request):
     return render(request, "tandc.html")

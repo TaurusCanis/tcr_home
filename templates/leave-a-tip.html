@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<!--Main layout-->
+<main class="mt-5 pt-4">
+    <div class="container dark-grey-text mt-5">
+
+        <!--Grid row-->
+        <div class="row wow fadeIn">
+
+            <!--Grid column-->
+            <div class="col-md-6 mb-4">
+
+                {% if item.image %}
+                <img class="card-img-top" src="{{ MEDIA_URL }}{{ object.image.url }}" alt="">
+                {% else %}
+
+                <img class="card-img-top" src="{{ object.thumbnail_url }}" alt="">
+                {% endif %}
+
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-md-6 mb-4">
+
+                <!--Content-->
+                <div class="p-4">
+
+                    <div class="mb-3">
+                        <a href="">
+                            <span class="badge purple mr-1">{{ object.get_category_display }}</span>
+                        </a>
+
+                    </div>
+
+                    <p class="lead font-weight-bold">{{ object.printful_name }}</p>
+
+                    <p>{{ object.description }}</p>
+
+                    <form method="POST" class="d-flex flex-column justify-content-left">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <input type="hidden" value="{{ object.printful_product_id }}" name="printful_product_id">
+                            <label for="donation_amount">Donation Amount: $</label>
+                            <input name="donation_amount" type="number" value="10.00" aria-label="Search"
+                                class="form-control" style="width: 100px">
+                        </div>
+
+                        <button class="btn btn-primary btn-md my-0 p" type="submit">Add to cart
+                            <i class="fas fa-shopping-cart ml-1"></i>
+                        </button>
+
+                    </form>
+
+                    <script>
+                        var price_element = document.querySelector("#price");
+                        var select_variant = document.querySelector("#select_variant");
+
+                        select_variant.addEventListener("change", function () {
+                            var selected_variant = select_variant.options[select_variant.selectedIndex].id;
+                            console.log("selected_variant: ", selected_variant)
+                            price_element.innerHTML = "$" + selected_variant;
+                        });
+                    </script>
+
+
+
+
+                </div>
+                <!--Content-->
+
+            </div>
+            <!--Grid column-->
+
+        </div>
+        <!--Grid row-->
+
+        <hr>
+
+        <!--Grid row-->
+        <div class="row d-flex justify-content-center wow fadeIn">
+
+            <!--Grid column-->
+            <div class="col-md-6 text-center">
+
+                <h4 class="my-4 h4">Additional information</h4>
+
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus suscipit modi sapiente illo soluta
+                    odit
+                    voluptates,
+                    quibusdam officia. Neque quibusdam quas a quis porro? Molestias illo neque eum in laborum.</p>
+
+            </div>
+            <!--Grid column-->
+
+        </div>
+        <!--Grid row-->
+
+        <!--Grid row-->
+        <div class="row wow fadeIn">
+
+            <!--Grid column-->
+            <div class="col-lg-4 col-md-12 mb-4">
+
+                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid"
+                    alt="">
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid"
+                    alt="">
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid"
+                    alt="">
+
+            </div>
+            <!--Grid column-->
+
+        </div>
+        <!--Grid row-->
+
+    </div>
+</main>
+<!--Main layout-->
+{% endblock %}
