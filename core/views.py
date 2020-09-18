@@ -1084,6 +1084,8 @@ class ItemDetailView(DetailView):
         if slug == "leave_a_tip":
             donation_amount = self.request.POST.get('donation_amount')
             add_donation_to_cart(self.request, slug=slug, donation_amount=donation_amount) 
+        elif slug == "test_item":
+            add_to_cart(self.request, slug="test_item")
         else:
             printful_product_id = self.request.POST.get('printful_product_id')
             selected_variant_id = self.request.POST.get('selected_variant')
