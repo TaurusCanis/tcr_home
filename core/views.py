@@ -1030,7 +1030,7 @@ class ItemDetailView(DetailView):
             "object": item
         }
         if item.category == "T":
-            return render(self.request, "donation-page.html", context)
+            return render(self.request, "leave-a-tip.html", context)
         else:
             return render(self.request, "product-page.html", context)
 
