@@ -972,8 +972,12 @@ class HomeView(View):
             try:
                 print("valid")
                 first_name = form.cleaned_data('first_name')
+                print("first_name: ", first_name)
                 email_address = form.cleaned_data('email_address')
-                new_subscriber = MailingListSubscriber(first_name, email_address)
+                print("email_address: ", email_address)
+                new_subscriber = MailingListSubscriber()
+                new_subscriber.first_name=first_name
+                new_subscriber.email_address=email_address
                 new_subscriber.save()
                 messages.success(self.request, "You have been added to the mailing list.")
                 return redirect("/")
