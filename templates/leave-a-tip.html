@@ -13,9 +13,9 @@
             <!--Grid column-->
             <div class="col-md-6 mb-4">
 
-                {% if item.image %}
+                {% if object.image %}
                 <img class="card-img-top" src="{{ MEDIA_URL }}{{ object.image.url }}" alt="">
-                {% if item.category == 'T' %}
+                {% if object.category == 'T' %}
                 <img class="card-img-top" src="{% static 'img/tip_jar.jpg' %}" alt="">
                 {% endif %}
 
