@@ -11,7 +11,8 @@ from decimal import *
 CATEGORY_CHOICES = {
     ('C', 'Clothing'),
     ('P', 'Posters'),
-    ('M', 'Mugs')
+    ('M', 'Mugs'),
+    ('T', 'Tip'),
 }
 
 LABEL_CHOICES = {
