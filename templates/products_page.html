@@ -59,7 +59,7 @@
     <section class="text-center mb-4">
 
       <!--Grid row-->
-      <div class="row wow fadeIn">
+      <div class="row row-eq-height wow fadeIn">
 
         {% for item in object_list %}
         <!--Grid column-->
@@ -107,9 +107,13 @@
                 <strong>
                   {% if item.discount_price %}
                   ${{ item.discount_price }}
+                  {% elif item.category == 'T' %}
+                  $ Any Amount
                   {% else %}
                   ${{ item.price }}
                   {% endif %}
+
+
                 </strong>
               </h4>
 
