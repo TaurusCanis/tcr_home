@@ -967,6 +967,7 @@ class HomeView(View):
         return render(self.request, "home-page.html", context)
     def post(self, *args, **kwargs):
         form = MailingListForm(self.request.POST)
+        print("form: ", form)
         if form.is_valid():
             try:
                 first_name = form.cleaned_data('first_name')
@@ -978,6 +979,9 @@ class HomeView(View):
             except:
                 messages.error(self.request, "There was an error. Please try again.")
                 return redirect("/")
+        else:
+            messages.error(self.request, "There was an error. Please try again.")
+            return redirect("/") 
 
 # class OrderSummaryView(LoginRequiredMixin, View):
 class OrderSummaryView(View):
