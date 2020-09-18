@@ -73,6 +73,7 @@
 
 
               {% if item.image %}
+              {{ item.image.url }}
               <img class="card-img-top" src="{{ MEDIA_URL }}{{ item.image.url }}" alt="">
               {% else %}
 
