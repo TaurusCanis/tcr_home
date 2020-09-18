@@ -27,26 +27,24 @@ import braintree
 #     return render(request, "parking_page.html")
 
 # BRAINTREE SANDBOX INTEGRATION
-gateway = braintree.BraintreeGateway(
-    braintree.Configuration(
-        braintree.Environment.Sandbox,
-        merchant_id=settings.BRAINTREE_SANDBOX_MERCHANT_ID,
-        public_key=settings.BRAINTREE_SANDBOX_PUBLIC_KEY,
-        private_key=settings.BRAINTREE_SANDBOX_PRIVATE_KEY
-        # merchant_id="wwy3t4hrktyrsdhj",
-        # public_key="gdq835hnqc5xc6hz",
-        # private_key="1324f8751a49d64be2313dbf79db5b6a"
-    )
-)
-
 # gateway = braintree.BraintreeGateway(
 #     braintree.Configuration(
-#         braintree.Environment.Production,
-#         merchant_id=settings.BRAINTREE_PRODUCTION_MERCHANT_ID,
-#         public_key=settings.BRAINTREE_PRODUCTION_PUBLIC_KEY,
-#         private_key=settings.BRAINTREE_PRODUCTION_PRIVATE_KEY
+#         braintree.Environment.Sandbox,
+#         merchant_id=settings.BRAINTREE_SANDBOX_MERCHANT_ID,
+#         public_key=settings.BRAINTREE_SANDBOX_PUBLIC_KEY,
+#         private_key=settings.BRAINTREE_SANDBOX_PRIVATE_KEY
 #     )
-# )
+)
+
+# Braintree Production Integration
+gateway = braintree.BraintreeGateway(
+    braintree.Configuration(
+        braintree.Environment.Production,
+        merchant_id=settings.BRAINTREE_PRODUCTION_MERCHANT_ID,
+        public_key=settings.BRAINTREE_PRODUCTION_PUBLIC_KEY,
+        private_key=settings.BRAINTREE_PRODUCTION_PRIVATE_KEY
+    )
+)
 
 def braintree_client_token(request):
     client_token = gateway.client_token.generate()
