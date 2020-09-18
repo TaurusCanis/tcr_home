@@ -73,8 +73,10 @@
 
 
               {% if item.image %}
-              {{ item.image.url }}
-              <img class="card-img-top" src="{% static item.image.url %}" alt="">
+              {% if item.category is 'T' %}
+              <img class="card-img-top" src="{% static 'img/tip_jar.jpg' %}" alt="">
+              {% endif %}
+              <img class="card-img-top" src="{{ MEDIA_URL }}{{ item.image.url }}" alt="">
               {% else %}
 
               <img class="card-img-top" src="{{ item.thumbnail_url }}" alt="">
