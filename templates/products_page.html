@@ -74,7 +74,7 @@
 
               {% if item.image %}
               <img class="card-img-top" src="{{ MEDIA_URL }}{{ item.image.url }}" alt="">
-              {% if item.category is 'T' %}
+              {% if item.category == 'T' %}
               <img class="card-img-top" src="{% static 'img/tip_jar.jpg' %}" alt="">
               {% endif %}
 
