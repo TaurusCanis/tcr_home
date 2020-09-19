@@ -3,7 +3,12 @@
 {% block content %}
 <div class="container">
   <h1 class="my-5 h1 text-center">TaurusCanis Rex</h1>
-  {% include "carousel.html" %}
+  {# <!-- {% include "carousel.html" %} --> #}
+  <section id="video_section">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/aoghb3mB1x4" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+  </section>
   <section id="connect" class="mailing_list">
     <div class="mailing_list_blurb">
 
@@ -62,18 +67,18 @@
       </iframe>
     </div>
   </section>  -->
-  <section id="watch" class="video">
-    <h3 class="my-5 h3 text-center">Watch</h3>
-    <!-- Corona King (old version) on youtube -->
-    <!-- <div class="row d-flex justify-content-center">
+  <!-- <section id="watch" class="video"> -->
+  <!-- <h3 class="my-5 h3 text-center">Watch</h3> -->
+  <!-- Corona King (old version) on youtube -->
+  <!-- <div class="row d-flex justify-content-center">
       <iframe width="560" height="315" src="https://www.youtube.com/embed/qSEhskItxVk" frameborder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div> -->
-    <div class="row d-flex justify-content-center">
+  <!-- <div class="row d-flex justify-content-center">
       <iframe width="560" height="315" src="https://www.youtube.com/embed/m7EG7CjvD6w" frameborder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div>
-  </section> <!-- class="video" -->
+    </div> -->
+  <!-- </section>  -->
   <section class="store">
     <h3 class="my-5 h3 text-center">Shop</h3>
     <a class="text-center" href="{% url 'core:products_page' %}">
