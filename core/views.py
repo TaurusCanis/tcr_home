@@ -21,7 +21,28 @@ from django.core.mail import EmailMultiAlternatives
 
 
 import stripe
-import braintree
+# import braintree
+
+# This is your real test secret API key.
+stripe.api_key = settings.STRIPE_SECRET_KEY
+stripe_pk = settings.STRIPE_PUBLISHABLE_KEY
+
+def secret(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    order_id = body['order_id']
+    order = Order.objects.get(id=order_id)
+    order_total = int(order.get_total() * 100)
+
+    intent = stripe.PaymentIntent.create(
+        amount=order_total,
+        currency='usd',
+        # Verify your integration in this guide by including this parameter
+        metadata={'integration_check': 'accept_a_payment'},
+    )
+    print("intent: ", intent)
+    return JsonResponse({ "client_secret": intent.client_secret })
+
 
 # def parking_page(request):
 #     return render(request, "parking_page.html")
@@ -37,159 +58,161 @@ import braintree
 # )
 
 # Braintree Production Integration
-gateway = braintree.BraintreeGateway(
-    braintree.Configuration(
-        braintree.Environment.Production,
-        merchant_id=settings.BRAINTREE_PRODUCTION_MERCHANT_ID,
-        public_key=settings.BRAINTREE_PRODUCTION_PUBLIC_KEY,
-        private_key=settings.BRAINTREE_PRODUCTION_PRIVATE_KEY
-    )
-)
+# gateway = braintree.BraintreeGateway(
+#     braintree.Configuration(
+#         braintree.Environment.Production,
+#         merchant_id=settings.BRAINTREE_PRODUCTION_MERCHANT_ID,
+#         public_key=settings.BRAINTREE_PRODUCTION_PUBLIC_KEY,
+#         private_key=settings.BRAINTREE_PRODUCTION_PRIVATE_KEY
+#     )
+# )
 
-def braintree_client_token(request):
-    client_token = gateway.client_token.generate()
-    print("client_token: ", client_token)
-    data = { 'token': client_token }
-    return JsonResponse(data)
+# def braintree_client_token(request):
+#     client_token = gateway.client_token.generate()
+#     print("client_token: ", client_token)
+#     data = { 'token': client_token }
+#     return JsonResponse(data)
 
-def braintree_create_purchase(request):
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
+# def braintree_create_purchase(request):
+#     body_unicode = request.body.decode('utf-8')
+#     body = json.loads(body_unicode)
 
-    print("body: ", body)
+#     print("body: ", body)
 
-    nonce_from_the_client = body['nonce_from_the_client']
-    device_data_from_the_client = body['device_data_from_the_client']
-    order_id = body["order_id"]
-    amount = body['amount']
+#     nonce_from_the_client = body['nonce_from_the_client']
+#     device_data_from_the_client = body['device_data_from_the_client']
+#     order_id = body["order_id"]
+#     amount = body['amount']
 
-    print("device_data_from_the_client: ", device_data_from_the_client)
+#     print("device_data_from_the_client: ", device_data_from_the_client)
 
-    billing_address = body["billing"]["street_address"]
-    billing_address_2 = body["billing"]["extended_address"]
-    billing_city = body["billing"]["locality"]
-    billing_state = body["billing"]["region"]
-    billing_postal_code = body["billing"]["postal_code"]
-    billing_country_code = body["billing"]["country_code_alpha2"]
+#     billing_address = body["billing"]["street_address"]
+#     billing_address_2 = body["billing"]["extended_address"]
+#     billing_city = body["billing"]["locality"]
+#     billing_state = body["billing"]["region"]
+#     billing_postal_code = body["billing"]["postal_code"]
+#     billing_country_code = body["billing"]["country_code_alpha2"]
 
-    shipping_address = body["shipping"]["street_address"]
-    shipping_address_2 = body["shipping"]["extended_address"]
-    shipping_city = body["shipping"]["locality"]
-    shipping_state = body["shipping"]["region"]
-    shipping_postal_code = body["shipping"]["postal_code"]
-    shipping_country_code = body["shipping"]["country_code_alpha2"]
+#     shipping_address = body["shipping"]["street_address"]
+#     shipping_address_2 = body["shipping"]["extended_address"]
+#     shipping_city = body["shipping"]["locality"]
+#     shipping_state = body["shipping"]["region"]
+#     shipping_postal_code = body["shipping"]["postal_code"]
+#     shipping_country_code = body["shipping"]["country_code_alpha2"]
 
-    order = Order.objects.get(session_id=request.session['id'], ordered=False)
-    items_in_order = OrderItem.objects.filter(session_id=order.session_id)
-    print("ITEMS_IN_ORDER****: ", items_in_order)
+#     order = Order.objects.get(session_id=request.session['id'], ordered=False)
+#     items_in_order = OrderItem.objects.filter(session_id=order.session_id)
+#     print("ITEMS_IN_ORDER****: ", items_in_order)
 
-    line_items = []
-    for order_item in items_in_order:
-        line_items.append({
-            "kind": 'debit',
-            "name": order_item.item.title,
-            "product_code": order_item.item.id,
-            "quantity": order_item.quantity,
-            "unit_amount": order_item.item.retail_price,
-            "total_amount": order_item.quantity * order_item.item.retail_price
-        })
-    print("post")
-    try:
-        ref_code = create_ref_code()
-        print("ref_code: ", ref_code)
-        print("ref_code type: ", type(ref_code))
-        print("try")
+#     line_items = []
+#     for order_item in items_in_order:
+#         line_items.append({
+#             "kind": 'debit',
+#             "name": order_item.item.title,
+#             "product_code": order_item.item.id,
+#             "quantity": order_item.quantity,
+#             "unit_amount": order_item.item.retail_price,
+#             "total_amount": order_item.quantity * order_item.item.retail_price
+#         })
+#     print("post")
+#     try:
+#         ref_code = create_ref_code()
+#         print("ref_code: ", ref_code)
+#         print("ref_code type: ", type(ref_code))
+#         print("try")
 
-        result = gateway.transaction.sale({
-            "amount": amount,
-            "merchant_account_id": "TaurusCanisRex_instant",
-            "payment_method_nonce": nonce_from_the_client,
-            "device_data": device_data_from_the_client,
-            "customer": {
-                "first_name": body['customer']['first_name'],
-                "last_name": body['customer']['last_name'],
-                # "phone": customer_phone,
-                "email": body['customer']['email_address']
-            },
-            "line_items": line_items,
-            "custom_fields": {
-                "tcr_order_ref_number": ref_code
-            },
-            "billing": {
-                # "first_name": billing_first_name,
-                # "last_name": billing_last_name,
-                "street_address": billing_address,
-                "extended_address": billing_address_2,
-                "locality": billing_city,
-                "region": billing_state,
-                "postal_code": billing_postal_code,
-                "country_code_alpha2": billing_country_code
-            },
-            "shipping": {
-                # "first_name": shipping_first_name,
-                # "last_name": shipping_last_name,
-                "street_address": shipping_address,
-                "extended_address": shipping_address_2,
-                "locality": shipping_city,
-                "region": shipping_state,
-                "postal_code": shipping_postal_code,
-                "country_code_alpha2": shipping_country_code
-            },
-            "options": {
-                "submit_for_settlement": True
-            },
-        })
+#         result = gateway.transaction.sale({
+#             "amount": amount,
+#             "merchant_account_id": "TaurusCanisRex_instant",
+#             "payment_method_nonce": nonce_from_the_client,
+#             "device_data": device_data_from_the_client,
+#             "customer": {
+#                 "first_name": body['customer']['first_name'],
+#                 "last_name": body['customer']['last_name'],
+#                 # "phone": customer_phone,
+#                 "email": body['customer']['email_address']
+#             },
+#             "line_items": line_items,
+#             "custom_fields": {
+#                 "tcr_order_ref_number": ref_code
+#             },
+#             "billing": {
+#                 # "first_name": billing_first_name,
+#                 # "last_name": billing_last_name,
+#                 "street_address": billing_address,
+#                 "extended_address": billing_address_2,
+#                 "locality": billing_city,
+#                 "region": billing_state,
+#                 "postal_code": billing_postal_code,
+#                 "country_code_alpha2": billing_country_code
+#             },
+#             "shipping": {
+#                 # "first_name": shipping_first_name,
+#                 # "last_name": shipping_last_name,
+#                 "street_address": shipping_address,
+#                 "extended_address": shipping_address_2,
+#                 "locality": shipping_city,
+#                 "region": shipping_state,
+#                 "postal_code": shipping_postal_code,
+#                 "country_code_alpha2": shipping_country_code
+#             },
+#             "options": {
+#                 "submit_for_settlement": True
+#             },
+#         })
 
-        if result.is_success:
-            #create payment
-            payment = Payment()
-            # payment.stripe_charge_id = charge['id'] #he used charge['id']
-            payment.session_id = request.session['id']
-            payment.amount = order.get_total()
-            order = order
-            braintree_transaction_id = result.transaction.id
-            payment.save()
-            print("payment")
+#         if result.is_success:
+#             #create payment
+#             payment = Payment()
+#             # payment.stripe_charge_id = charge['id'] #he used charge['id']
+#             payment.session_id = request.session['id']
+#             payment.amount = order.get_total()
+#             order = order
+#             braintree_transaction_id = result.transaction.id
+#             payment.save()
+#             print("payment")
 
-            #assign payment to order
+#             #assign payment to order
 
-            order_items = order.items.filter(session_id = request.session["id"])
-            print("ORDER_ITEMS: ", order_items)
-            order_items.update(ordered=True)
-            print("ORDER_ITEMS: ", order_items)
-            for item in order_items:
-                item.save()
+#             order_items = order.items.filter(session_id = request.session["id"])
+#             print("ORDER_ITEMS: ", order_items)
+#             order_items.update(ordered=True)
+#             print("ORDER_ITEMS: ", order_items)
+#             for item in order_items:
+#                 item.save()
 
-            order.ordered = True
-            order.payment = payment
-            order.ref_code = ref_code
-            order.save()
-            print("save")
+#             order.ordered = True
+#             order.payment = payment
+#             order.ref_code = ref_code
+#             order.save()
+#             print("save")
 
-            # update_printful_order(order.printful_order_id)
-            # send_confirmation_email(order)
+#             # update_printful_order(order.printful_order_id)
+#             # send_confirmation_email(order)
 
-            print("result: ", result)
-            successful_order = Order.objects.filter(id=order_id)[0]
-            print("successful_order: ", successful_order)
-            successful_order.ordered = True
-            successful_order.save()
+#             print("result: ", result)
+#             successful_order = Order.objects.filter(id=order_id)[0]
+#             print("successful_order: ", successful_order)
+#             successful_order.ordered = True
+#             successful_order.save()
 
-            # print("request.session['id']: ", request.session['id'])
-            # request.session['id'] = None
-            # request.session.modified = True
-            request.session.flush()
-
-            return JsonResponse({ "url": "order_confirmation_page" })
-        else:
-            print("error")
-            return JsonResponse({ "url": "error_page" })
-    except Exception as e:
-        # Send email to self
-        print("exception!!")
-        print("error: ", e)
-        messages.warning(request, "An error has ocurred. We have been notified. You have not been charged.")
-        return redirect("/")
+#             # print("request.session['id']: ", request.session['id'])
+#             # request.session['id'] = None
+#             # request.session.modified = True
+            
+#             print("SUCCESSS?????")
+#             context = json.loads({'next_url': 'order_confirmation_page'})
+#             # return JsonResponse(context)
+#             return HttpResponse("Success!")
+#         else:
+#             print("error")
+#             return JsonResponse({'url': 'error_page' })
+#     except Exception as e:
+#         # Send email to self
+#         print("exception!!")
+#         print("error: ", e)
+#         messages.warning(request, "An error has ocurred. We have been notified. You have not been charged.")
+#         return redirect("/")
 
 
 #STRIPE INTEGRATION
@@ -222,7 +245,8 @@ def is_valid_form(values):
 
 def order_confirmation_page(request):
     print("order_confirmation_page")
-    order_id = request.POST.get("order_id")
+    order_id = request.GET.get('order_id')
+    payment_id = request.GET.get('payment_id')
 
     order = Order.objects.get(id = order_id)
 
@@ -231,12 +255,13 @@ def order_confirmation_page(request):
     return render(request, "order_confirmation_page.html", { "order": order })
 
 def error_page(request):
+    order_id = request.GET.get('order_id')
     order = Order.objects.get(session_id=request.session['id'], ordered=False)
     if order.billing_address:
         context = {
             'order': order,
             'DISPLAY_COUPON_FORM': False,
-            # 'stripe_key': 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ'
+            'stripe_key': stripe_key
         }
         messages.warning(request, "There was an error with your payment method. You have not been charged. Please try again")
         return render(request, "payment.html", context)
@@ -509,17 +534,35 @@ class CheckoutView(View):
                 # print("billing_address: ", billing_address)
 
                 print("order.printful_order_id: ", order.printful_order_id)
-                if order.printful_order_id is not None:
-                    res = create_printful_order(order, shipping_address)
-                    print("create_printful_order RES: ", res)
+                if order.printful_order_id is None:
+                    # res = create_printful_order(order, shipping_address)  ##if using printful
+                    # print("create_printful_order RES: ", res)
+                    ##if not using printful
+
+                    order.grand_total = order.get_total()
+                    order.save()
+
+
+                    
                 else:
                     print("printful order exists")
                     # update_printful_order()
                     pass
                 # payment_option = form.cleaned_data.get('payment_option')
 
-                return redirect('core:payment')
+                # return redirect('core:payment') ##Braintree
 
+                # intent = stripe.PaymentIntent.create(
+                #     amount=1099,
+                #     currency='usd',
+                #     # Verify your integration in this guide by including this parameter
+                #     metadata={'integration_check': 'accept_a_payment'},
+                # )
+                # print("intent: ", intent)
+                # print("secret_key: ", intent.client_secret)
+                # return redirect('core:payment', cs=intent.client_secret) ##Stripe
+
+                return redirect('core:payment')
                 # if payment_option == 'S':
                 #     return redirect('core:payment', payment_option='stripe')
                 # elif payment_option == 'P':
@@ -533,8 +576,58 @@ class CheckoutView(View):
             messages.warning(self.request, "You do not have an active order")
             return redirect("core:order-summary")
 
+def stripe_payment(request):
+    try: 
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        order_id = body['order_id']
+        stripe_payment_intent_id = body['payment_id']
+
+        print("order_id: ", order_id)
+        print("stripe_payment_intent_id: ", stripe_payment_intent_id)
+
+        order = Order.objects.get(id=order_id)
+
+        ref_code = create_ref_code()
+
+        payment = Payment()
+        payment.stripe_payment_id = stripe_payment_intent_id
+        payment.session_id = request.session['id']
+        payment.amount = order.get_total()
+        payment.save()
+        print("payment")
+
+        #assign payment to order
+
+        order_items = order.items.all()
+        order_items.update(ordered=True)
+        for item in order_items:
+            item.save()
+
+        order.ordered = True
+        order.payment = payment
+        order.ref_code = ref_code
+        order.save()
+        print("save")
+        request.session.flush()
+        messages.success(request, "Your order was successful!")
+
+        print("SUCCESS")
+        return JsonResponse({'next_url': 'order_confirmation_page'})
+    except Exception as e:
+        print("Error: ", e)
+        # Send email to self
+        messages.warning(request, "An error has ocurred. We have been notified.")
+        return JsonResponse({ "next_url": "error_page" })
+    
+    
+
 class PaymentView(View):
     def get(self, *args, **kwargs):
+        print("self.request: ", self.request.POST)
+        print("*args: ", self.args)
+        print("*kwargs: ", self.kwargs)
+        # client_secret = self.kwargs['cs']
         print("merchant_id= ", settings.BRAINTREE_SANDBOX_MERCHANT_ID)
         print("public_key= ", settings.BRAINTREE_SANDBOX_PUBLIC_KEY)
         print("private_key= ", settings.BRAINTREE_SANDBOX_PRIVATE_KEY)
@@ -544,7 +637,8 @@ class PaymentView(View):
             context = {
                 'order': order,
                 'DISPLAY_COUPON_FORM': False,
-                # 'stripe_key': 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ'
+                'stripe_key': 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ',
+                # "client_secret": client_secret
             }
             return render(self.request, "payment.html", context)
         else:
