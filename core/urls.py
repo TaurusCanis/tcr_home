@@ -21,6 +21,7 @@ from .views import (
     pp,
     returns_policy,
     secret,
+    stripe_payment,
 )
 
 app_name = 'core'
@@ -51,5 +52,6 @@ urlpatterns = [
     path('pp/', pp, name='pp'),
     path('returns_policy/', returns_policy, name='returns_policy'),
     path('secret/', secret, name='secret'),
+    path('stripe_payment/', stripe_payment, name='stripe_payment'),
 ]
 

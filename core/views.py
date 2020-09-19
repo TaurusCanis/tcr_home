@@ -37,6 +37,7 @@ def create_payment(request):
 
     try:
         # Send publishable key and PaymentIntent details to client
+        print("Sending JsonResponse************")
         return JsonResponse({'publishableKey': os.getenv('STRIPE_PUBLISHABLE_KEY'), 'clientSecret': intent.client_secret})
     except Exception as e:
         return JsonResponse({ "error": str(e), "error code": 403 })
@@ -49,13 +50,24 @@ def calculate_order_amount(items):
     return 1400
 
 def secret(request):
-  intent = stripe.PaymentIntent.create(
-        amount=1099,
+    print("SECRET")
+
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    print("body: ", body)
+    order_id = body['order_id']
+    print("order_id: ", order_id )
+    order = Order.objects.get(id=order_id)
+    order_total = int(order.get_total() * 100)
+    print("order_total: ", order_total)
+    intent = stripe.PaymentIntent.create(
+        amount=order_total,
         currency='usd',
         # Verify your integration in this guide by including this parameter
         metadata={'integration_check': 'accept_a_payment'},
     )
-  return JsonResponse({ "client_secret": intent.client_secret })
+    print("intent: ", intent)
+    return JsonResponse({ "client_secret": intent.client_secret })
 
 
 # def parking_page(request):
@@ -213,12 +225,14 @@ def braintree_create_purchase(request):
             # print("request.session['id']: ", request.session['id'])
             # request.session['id'] = None
             # request.session.modified = True
-            request.session.flush()
-
-            return JsonResponse({ "url": "order_confirmation_page" })
+            
+            print("SUCCESSS?????")
+            context = json.loads({'next_url': 'order_confirmation_page'})
+            # return JsonResponse(context)
+            return HttpResponse("Success!")
         else:
             print("error")
-            return JsonResponse({ "url": "error_page" })
+            return JsonResponse({'url': 'error_page' })
     except Exception as e:
         # Send email to self
         print("exception!!")
@@ -257,7 +271,11 @@ def is_valid_form(values):
 
 def order_confirmation_page(request):
     print("order_confirmation_page")
-    order_id = request.POST.get("order_id")
+    print("request: ", request)
+    order_id = request.GET.get('order_id')
+    payment_id = request.GET.get('payment_id')
+    print("order_id: ", order_id)
+    print("payment_id: ", payment_id)
 
     order = Order.objects.get(id = order_id)
 
@@ -544,9 +562,16 @@ class CheckoutView(View):
                 # print("billing_address: ", billing_address)
 
                 print("order.printful_order_id: ", order.printful_order_id)
-                if order.printful_order_id is not None:
-                    res = create_printful_order(order, shipping_address)
-                    print("create_printful_order RES: ", res)
+                if order.printful_order_id is None:
+                    # res = create_printful_order(order, shipping_address)  ##if using printful
+                    # print("create_printful_order RES: ", res)
+                    ##if not using printful
+
+                    order.grand_total = order.get_total()
+                    order.save()
+
+
+                    
                 else:
                     print("printful order exists")
                     # update_printful_order()
@@ -578,6 +603,52 @@ class CheckoutView(View):
             print("BETA")
             messages.warning(self.request, "You do not have an active order")
             return redirect("core:order-summary")
+
+def stripe_payment(request):
+    try: 
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        order_id = body['order_id']
+        stripe_payment_intent_id = body['payment_id']
+
+        print("order_id: ", order_id)
+        print("stripe_payment_intent_id: ", stripe_payment_intent_id)
+
+        order = Order.objects.get(id=order_id)
+
+        ref_code = create_ref_code()
+
+        payment = Payment()
+        payment.stripe_payment_id = stripe_payment_intent_id
+        payment.session_id = request.session['id']
+        payment.amount = order.get_total()
+        payment.save()
+        print("payment")
+
+        #assign payment to order
+
+        order_items = order.items.all()
+        order_items.update(ordered=True)
+        for item in order_items:
+            item.save()
+
+        order.ordered = True
+        order.payment = payment
+        order.ref_code = ref_code
+        order.save()
+        print("save")
+
+        messages.success(request, "Your order was successful!")
+
+        print("SUCCESS")
+        return JsonResponse({'next_url': 'order_confirmation_page'})
+    except Exception as e:
+        print("Error: ", e)
+        # Send email to self
+        messages.warning(request, "An error has ocurred. We have been notified.")
+        return JsonResponse({ "next_url": "error_page" })
+    
+    
 
 class PaymentView(View):
     def get(self, *args, **kwargs):
