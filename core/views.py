@@ -23,6 +23,41 @@ from django.core.mail import EmailMultiAlternatives
 import stripe
 import braintree
 
+# This is your real test secret API key.
+stripe.api_key = settings.STRIPE_SECRET_KEY
+print("settings.STRIPE_SECRET_KEY: ", settings.STRIPE_SECRET_KEY)
+
+def create_payment(request):
+    data = json.loads(request.data)
+    # Create a PaymentIntent with the order amount and currency
+    intent = stripe.PaymentIntent.create(
+        amount=calculate_order_amount(data['items']),
+        currency=data['currency']
+    )
+
+    try:
+        # Send publishable key and PaymentIntent details to client
+        return JsonResponse({'publishableKey': os.getenv('STRIPE_PUBLISHABLE_KEY'), 'clientSecret': intent.client_secret})
+    except Exception as e:
+        return JsonResponse({ "error": str(e), "error code": 403 })
+
+
+def calculate_order_amount(items):
+    # Replace this constant with a calculation of the order's amount
+    # Calculate the order total on the server to prevent
+    # people from directly manipulating the amount on the client
+    return 1400
+
+def secret(request):
+  intent = stripe.PaymentIntent.create(
+        amount=1099,
+        currency='usd',
+        # Verify your integration in this guide by including this parameter
+        metadata={'integration_check': 'accept_a_payment'},
+    )
+  return JsonResponse({ "client_secret": intent.client_secret })
+
+
 # def parking_page(request):
 #     return render(request, "parking_page.html")
 
@@ -236,7 +271,7 @@ def error_page(request):
         context = {
             'order': order,
             'DISPLAY_COUPON_FORM': False,
-            # 'stripe_key': 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ'
+            'stripe_key': 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ'
         }
         messages.warning(request, "There was an error with your payment method. You have not been charged. Please try again")
         return render(request, "payment.html", context)
@@ -518,8 +553,19 @@ class CheckoutView(View):
                     pass
                 # payment_option = form.cleaned_data.get('payment_option')
 
-                return redirect('core:payment')
+                # return redirect('core:payment') ##Braintree
 
+                # intent = stripe.PaymentIntent.create(
+                #     amount=1099,
+                #     currency='usd',
+                #     # Verify your integration in this guide by including this parameter
+                #     metadata={'integration_check': 'accept_a_payment'},
+                # )
+                # print("intent: ", intent)
+                # print("secret_key: ", intent.client_secret)
+                # return redirect('core:payment', cs=intent.client_secret) ##Stripe
+
+                return redirect('core:payment')
                 # if payment_option == 'S':
                 #     return redirect('core:payment', payment_option='stripe')
                 # elif payment_option == 'P':
@@ -535,6 +581,10 @@ class CheckoutView(View):
 
 class PaymentView(View):
     def get(self, *args, **kwargs):
+        print("self.request: ", self.request.POST)
+        print("*args: ", self.args)
+        print("*kwargs: ", self.kwargs)
+        # client_secret = self.kwargs['cs']
         print("merchant_id= ", settings.BRAINTREE_SANDBOX_MERCHANT_ID)
         print("public_key= ", settings.BRAINTREE_SANDBOX_PUBLIC_KEY)
         print("private_key= ", settings.BRAINTREE_SANDBOX_PRIVATE_KEY)
@@ -544,7 +594,8 @@ class PaymentView(View):
             context = {
                 'order': order,
                 'DISPLAY_COUPON_FORM': False,
-                # 'stripe_key': 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ'
+                'stripe_key': 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ',
+                # "client_secret": client_secret
             }
             return render(self.request, "payment.html", context)
         else:

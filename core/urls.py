@@ -19,7 +19,8 @@ from .views import (
     error_page,
     tandc,
     pp,
-    returns_policy
+    returns_policy,
+    secret,
 )
 
 app_name = 'core'
@@ -35,8 +36,9 @@ urlpatterns = [
     path('order_summary/', OrderSummaryView.as_view(), name='order_summary'),
     # path('remove_single_item_from_cart/<slug>/', remove_single_item_from_cart, name='remove_single_item_from_cart'),
     path('remove_single_item_from_cart/<item_variant_id>/<printful_product_id>/', remove_single_item_from_cart, name='remove_single_item_from_cart'),
-    path('payment/<payment_option>/', PaymentView.as_view(), name='payment'),
+    # path('payment/<payment_option>/', PaymentView.as_view(), name='payment'),
     path('payment/', PaymentView.as_view(), name='payment'),
+    path('payment/<cs>/', PaymentView.as_view(), name='payment'),
     path('add_coupon/', AddCoupon.as_view(), name='add_coupon'),
     path('request_refund/', RequestRefund.as_view(), name='request_refund'),
     path('products_page/', ProductsPage.as_view(), name='products_page'),
@@ -47,5 +49,7 @@ urlpatterns = [
     path('error_page/', error_page, name='error_page'),
     path('tandc/', tandc, name='tandc'),
     path('pp/', pp, name='pp'),
-    path('returns_policy/', returns_policy, name='returns_policy')
+    path('returns_policy/', returns_policy, name='returns_policy'),
+    path('secret/', secret, name='secret'),
 ]
+

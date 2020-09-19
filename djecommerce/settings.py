@@ -15,6 +15,9 @@ BRAINTREE_SANDBOX_MERCHANT_ID = os.environ.get('BRAINTREE_SANDBOX_MERCHANT_ID', 
 BRAINTREE_SANDBOX_PUBLIC_KEY = os.environ.get('BRAINTREE_SANDBOX_PUBLIC_KEY', 'gdq835hnqc5xc6hz')
 BRAINTREE_SANDBOX_PRIVATE_KEY = os.environ.get('BRAINTREE_SANDBOX_PRIVATE_KEY', '1324f8751a49d64be2313dbf79db5b6a')
 
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_sYyZfPMDiefqOPb1I6yZvHzM00GXAujNFH')
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY',)
+
 PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY', '6bhck2wu-onuj-xp2n:ltb0-wsfqq6pskkwe')
 
 ALLOWED_HOSTS = ['tauruscanisrex.com', 'tauruscanisrex.herokuapp.com', '127.0.0.1']
