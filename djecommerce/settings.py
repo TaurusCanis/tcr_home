@@ -1,24 +1,20 @@
 import os
 import django_heroku
 
-ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
 
-DEBUG = True
+DEBUG = False
 # DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# SECRET_KEY = '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj'
-SECRET_KEY = os.environ.get('SECRET_KEY', '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj')
+SECRET_KEY = os.environ.get('SECRET_KEY', )
 BRAINTREE_PRODUCTION_MERCHANT_ID = os.environ.get('BRAINTREE_PRODUCTION_MERCHANT_ID', )
 BRAINTREE_PRODUCTION_PUBLIC_KEY = os.environ.get('BRAINTREE_PRODUCTION_PUBLIC_KEY', )
 BRAINTREE_PRODUCTION_PRIVATE_KEY = os.environ.get('BRAINTREE_PRODUCTION_PRIVATE_KEY', )
-BRAINTREE_SANDBOX_MERCHANT_ID = os.environ.get('BRAINTREE_SANDBOX_MERCHANT_ID', 'wwy3t4hrktyrsdhj')
-BRAINTREE_SANDBOX_PUBLIC_KEY = os.environ.get('BRAINTREE_SANDBOX_PUBLIC_KEY', 'gdq835hnqc5xc6hz')
-BRAINTREE_SANDBOX_PRIVATE_KEY = os.environ.get('BRAINTREE_SANDBOX_PRIVATE_KEY', '1324f8751a49d64be2313dbf79db5b6a')
 
-PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY', '6bhck2wu-onuj-xp2n:ltb0-wsfqq6pskkwe')
+PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY', )
 
 ALLOWED_HOSTS = ['tauruscanisrex.com', 'tauruscanisrex.herokuapp.com', '127.0.0.1']
-DEBUG_PROPAGATE_EXCEPTIONS = True
+DEBUG_PROPAGATE_EXCEPTIONS = False
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -73,73 +69,38 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, 'static'),
-# )
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
-
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
-# # TEMPLATE_DIRS = (
-#     # os.path.join(BASE_DIR, 'templates'),
-#     # Add to this list all the locations containing your static files
-# # )
-# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
+#     'formatters': {
+#         'verbose': {
+#             'format': ('%(asctime)s [%(process)d] [%(levelname)s] ' +
+#                        'pathname=%(pathname)s lineno=%(lineno)s ' +
+#                        'funcname=%(funcName)s %(message)s'),
+#             'datefmt': '%Y-%m-%d %H:%M:%S'
 #         },
+#         'simple': {
+#             'format': '%(levelname)s %(message)s'
+#         }
+#     },
+#     'handlers': {
+#         'null': {
+#             'level': 'DEBUG',
+#             'class': 'logging.NullHandler',
+#         },
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose'
+#         }
 #     },
 #     'loggers': {
-#         'django': {
+#         'testlogger': {
 #             'handlers': ['console'],
-#              'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-#         },
-#     },
+#             'level': 'INFO',
+#         }
+#     }
 # }
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': ('%(asctime)s [%(process)d] [%(levelname)s] ' +
-                       'pathname=%(pathname)s lineno=%(lineno)s ' +
-                       'funcname=%(funcName)s %(message)s'),
-            'datefmt': '%Y-%m-%d %H:%M:%S'
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        }
-    },
-    'handlers': {
-        'null': {
-            'level': 'DEBUG',
-            'class': 'logging.NullHandler',
-        },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        'testlogger': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        }
-    }
-}
 
 DATABASES = {
     # "default": {
@@ -147,18 +108,18 @@ DATABASES = {
     #     "NAME": os.path.join(BASE_DIR, 'db.sqlite3')
     # }
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd6161t0iao4mkv',
-        'USER': 'lxuhaubmbiubuv',
-        'PASSWORD': '424ab10f976d579c13f5f6c323a09477cc38ab7971c9b1b3462aa2b97c40fb39',
-        'HOST': 'ec2-54-147-209-121.compute-1.amazonaws.com',
-        'PORT': '5432',
+        'ENGINE': os.environ.get('DB_ENGINE', ),
+        'NAME': os.environ.get('DB_NAME', )
+        'USER': os.environ.get('DB_USER', ),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ),
+        'HOST': os.environ.get('DB_HOST', ),
+        'PORT': os.environ.get('DB_PORT', ),
     }
 }
 
 if ENVIRONMENT == 'production':
     DEBUG = False
-    SECRET_KEY = os.getenv('SECRET_KEY')
+    # SECRET_KEY = os.getenv('SECRET_KEY')
     SESSION_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -185,10 +146,10 @@ LOGIN_REDIRECT_URL = "/"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-EMAIL_HOST = "mail.privateemail.com"
-EMAIL_PORT = "465"
-EMAIL_HOST_USER = "admin@tauruscanisrex.com"
-EMAIL_HOST_PASSWORD = "SenorCerdo2013!"
+EMAIL_HOST = os.environ.get('EMAIL_HOST', )
+EMAIL_PORT = os.environ.get('EMAIL_PORT', )
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', )
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', )
 EMAIL_USE_SSL = True
 
 
