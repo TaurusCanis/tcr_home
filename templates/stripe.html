@@ -254,7 +254,7 @@
                 if (result.error) {
                     // Show error to your customer (e.g., insufficient funds)
                     console.log("ERROR: ", result.error.message);
-                    window.location = "/error_page/"
+                    window.location = "/error_page/?order_id=" + order_id
                 } else {
                     // The payment has been processed!
                     if (result.paymentIntent.status === 'succeeded') {
