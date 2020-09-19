@@ -1,15 +1,12 @@
 import os
 import django_heroku
 
-# ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
-ENVIRONMENT = 'development'
-print("ENVIRONMENT: ", ENVIRONMENT)
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
 
-DEBUG = True
+DEBUG = False
 # DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# SECRET_KEY = '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj'
-SECRET_KEY = os.environ.get('SECRET_KEY', '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj')
+SECRET_KEY = os.environ.get('SECRET_KEY', )
 BRAINTREE_PRODUCTION_MERCHANT_ID = os.environ.get('BRAINTREE_PRODUCTION_MERCHANT_ID', )
 BRAINTREE_PRODUCTION_PUBLIC_KEY = os.environ.get('BRAINTREE_PRODUCTION_PUBLIC_KEY', )
 BRAINTREE_PRODUCTION_PRIVATE_KEY = os.environ.get('BRAINTREE_PRODUCTION_PRIVATE_KEY', )
@@ -17,10 +14,10 @@ BRAINTREE_SANDBOX_MERCHANT_ID = os.environ.get('BRAINTREE_SANDBOX_MERCHANT_ID', 
 BRAINTREE_SANDBOX_PUBLIC_KEY = os.environ.get('BRAINTREE_SANDBOX_PUBLIC_KEY', 'gdq835hnqc5xc6hz')
 BRAINTREE_SANDBOX_PRIVATE_KEY = os.environ.get('BRAINTREE_SANDBOX_PRIVATE_KEY', '1324f8751a49d64be2313dbf79db5b6a')
 
-STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_sYyZfPMDiefqOPb1I6yZvHzM00GXAujNFH')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY',)
 STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ')
 
-PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY', '6bhck2wu-onuj-xp2n:ltb0-wsfqq6pskkwe')
+PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY',)
 print("PRINTFUL_KEY****: ", PRINTFUL_KEY)
 
 ALLOWED_HOSTS = ['tauruscanisrex.com', 'tauruscanisrex.herokuapp.com', '127.0.0.1']
