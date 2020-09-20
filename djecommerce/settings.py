@@ -3,10 +3,12 @@ import django_heroku
 
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
 
+# ENVIRONMENT = 'development'
+
 DEBUG = False
 # DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = os.environ.get('SECRET_KEY', )
+SECRET_KEY = os.environ.get('SECRET_KEY', '05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj')
 BRAINTREE_PRODUCTION_MERCHANT_ID = os.environ.get('BRAINTREE_PRODUCTION_MERCHANT_ID', )
 BRAINTREE_PRODUCTION_PUBLIC_KEY = os.environ.get('BRAINTREE_PRODUCTION_PUBLIC_KEY', )
 BRAINTREE_PRODUCTION_PRIVATE_KEY = os.environ.get('BRAINTREE_PRODUCTION_PRIVATE_KEY', )
