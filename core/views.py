@@ -167,6 +167,7 @@ def braintree_create_purchase(request):
             # payment.stripe_charge_id = charge['id'] #he used charge['id']
             payment.session_id = request.session['id']
             payment.amount = order.get_total()
+            payment.customer = order.customer
             order = order
             braintree_transaction_id = result.transaction.id
             payment.save()

@@ -17,7 +17,6 @@ BRAINTREE_PRODUCTION_PRIVATE_KEY = os.environ.get('BRAINTREE_PRODUCTION_PRIVATE_
 # STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', )
 
 PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY',)
-print("PRINTFUL_KEY****: ", PRINTFUL_KEY)
 
 ALLOWED_HOSTS = ['tauruscanisrex.com', 'tauruscanisrex.herokuapp.com', '127.0.0.1']
 DEBUG_PROPAGATE_EXCEPTIONS = False
