@@ -13,15 +13,16 @@ from .views import (
     RequestRefund,
     ProductsPage,
     OrderConfirmation,
-    # braintree_client_token,
-    # braintree_create_purchase,
+    braintree_client_token,
+    braintree_create_purchase,
     order_confirmation_page,
     error_page,
     tandc,
     pp,
     returns_policy,
-    secret,
-    stripe_payment,
+    # secret,
+    # stripe_payment,
+    order_confirmation_page_bt
 )
 
 app_name = 'core'
@@ -44,14 +45,15 @@ urlpatterns = [
     path('request_refund/', RequestRefund.as_view(), name='request_refund'),
     path('products_page/', ProductsPage.as_view(), name='products_page'),
     path('order_confirmation/', OrderConfirmation.as_view(), name='order_confirmation'),
-    # path('braintree_client_token/', braintree_client_token, name='braintree_client_token'),
-    # path('braintree_create_purchase/', braintree_create_purchase, name='braintree_create_purchase'),
+    path('braintree_client_token/', braintree_client_token, name='braintree_client_token'),
+    path('braintree_create_purchase/', braintree_create_purchase, name='braintree_create_purchase'),
     path('order_confirmation_page/', order_confirmation_page, name='order_confirmation_page'),
+    path('order_confirmation_page_bt/', order_confirmation_page_bt, name='order_confirmation_page_bt'),
     path('error_page/', error_page, name='error_page'),
     path('tandc/', tandc, name='tandc'),
     path('pp/', pp, name='pp'),
     path('returns_policy/', returns_policy, name='returns_policy'),
-    path('secret/', secret, name='secret'),
-    path('stripe_payment/', stripe_payment, name='stripe_payment'),
+    # path('secret/', secret, name='secret'),
+    # path('stripe_payment/', stripe_payment, name='stripe_payment'),
 ]
 

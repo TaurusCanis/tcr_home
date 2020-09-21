@@ -8,13 +8,13 @@ ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
 DEBUG = False
 # DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = os.environ.get('SECRET_KEY', '05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj')
+SECRET_KEY = os.environ.get('SECRET_KEY', )
 BRAINTREE_PRODUCTION_MERCHANT_ID = os.environ.get('BRAINTREE_PRODUCTION_MERCHANT_ID', )
 BRAINTREE_PRODUCTION_PUBLIC_KEY = os.environ.get('BRAINTREE_PRODUCTION_PUBLIC_KEY', )
 BRAINTREE_PRODUCTION_PRIVATE_KEY = os.environ.get('BRAINTREE_PRODUCTION_PRIVATE_KEY', )
 
-STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY',)
-STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ')
+# STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', )
+# STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', )
 
 PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY',)
 print("PRINTFUL_KEY****: ", PRINTFUL_KEY)

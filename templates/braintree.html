@@ -30,6 +30,7 @@
         return cookieValue;
     }
     var button = document.querySelector('#submit-button');
+    button.disabled = true;
 
     window.onload = function () {
 
@@ -83,7 +84,7 @@
                     paypal: true
                 }, function (err, dataCollectorInstance) {
                     if (err) {
-                        console.log("error: ", err)
+                        console.log("error!!!: ", err)
                         // Handle error in creation of data collector
                         return;
                     }
@@ -92,10 +93,15 @@
                     console.log("dataCollectorInstance: ", dataCollectorInstance)
                     deviceData = dataCollectorInstance.deviceData;
                     console.log("device data: ", deviceData)
+                    button.disabled = false;
                 });
+                if (err) {
+                    console.log("There was an error")
+                }
             });
 
             button.addEventListener('click', function () {
+                // button.disabled = true;
                 instance.requestPaymentMethod(function (err, payload) {
                     // Submit payload.nonce to your server
                     xml = new XMLHttpRequest();
@@ -135,11 +141,13 @@
                                 form.submit();
 
                             } else {
+                                console.log("There was an error")
                                 // There was a problem with the request.
                                 // For example, the response may have a 404 (Not Found)
                                 // or 500 (Internal Server Error) response code.
                             }
                         } else {
+                            console.log("There was an error!!!")
                             // Not ready yet.
                         }
                     }
