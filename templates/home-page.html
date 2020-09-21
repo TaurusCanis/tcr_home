@@ -5,9 +5,11 @@
   <h1 class="my-5 h1 text-center">TaurusCanis Rex</h1>
   {# <!-- {% include "carousel.html" %} --> #}
   <section id="video_section">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/aoghb3mB1x4" frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe>
+    <div class="text-center">
+      <iframe class="text-center" width="560" height="315" src="https://www.youtube.com/embed/aoghb3mB1x4"
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
   </section>
   <section id="connect" class="mailing_list">
     <div class="mailing_list_blurb">
@@ -81,14 +83,16 @@
   <!-- </section>  -->
   <section class="store">
     <h3 class="my-5 h3 text-center">Shop</h3>
+    <div class=""></div>
     <a class="text-center" href="{% url 'core:products_page' %}">
       <img class="img-fluid" src="{% static 'img/TCR_T_Shirt_Mock_up.png' %}">
     </a>
-    <div class="container_row">
-      {% for product in products.result %}
-      <div><img class=".img-fluid" src="{{ product.thumbnail_url }}"></div>
-      {% endfor %}
-    </div>
-  </section> <!-- class="store" -->
+</div>
+<div class="container_row">
+  {% for product in products.result %}
+  <div><img class=".img-fluid" src="{{ product.thumbnail_url }}"></div>
+  {% endfor %}
+</div>
+</section> <!-- class="store" -->
 </div> <!-- class="container" -->
 {% endblock %}
