@@ -1,5 +1,6 @@
 import os
 import django_heroku
+from decouple import config
 
 # ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
 
@@ -8,15 +9,17 @@ ENVIRONMENT = 'production'
 DEBUG = True
 # DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = os.environ.get('SECRET_KEY', '05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj')
-BRAINTREE_PRODUCTION_MERCHANT_ID = os.environ.get('BRAINTREE_PRODUCTION_MERCHANT_ID', 'ypwk6jkdkhn6c3jx')
-BRAINTREE_PRODUCTION_PUBLIC_KEY = os.environ.get('BRAINTREE_PRODUCTION_PUBLIC_KEY', 'mrzs5jtfmvmkzkjv')
-BRAINTREE_PRODUCTION_PRIVATE_KEY = os.environ.get('BRAINTREE_PRODUCTION_PRIVATE_KEY', 'f49af70c2659139cf6cdf926b8fc253d')
+SECRET_KEY = os.environ.get('SECRET_KEY', config('SECRET_KEY'))
+BRAINTREE_PRODUCTION_MERCHANT_ID = os.environ.get('BRAINTREE_PRODUCTION_MERCHANT_ID', config('BRAINTREE_PRODUCTION_MERCHANT_ID'))
+BRAINTREE_PRODUCTION_PUBLIC_KEY = os.environ.get('BRAINTREE_PRODUCTION_PUBLIC_KEY', config('BRAINTREE_PRODUCTION_PUBLIC_KEY'))
+BRAINTREE_PRODUCTION_PRIVATE_KEY = os.environ.get('BRAINTREE_PRODUCTION_PRIVATE_KEY', config('BRAINTREE_PRODUCTION_PRIVATE_KEY'))
+
+STRIPE_KEY = os.environ.get('STRIPE_KEY', config('STRIPE_KEY')) 
 
 # STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', )
 # STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', )
 
-PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY', '6bhck2wu-onuj-xp2n:ltb0-wsfqq6pskkwe')
+PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY', config('PRINTFUL_KEY'))
 
 ALLOWED_HOSTS = ['tauruscanisrex.com', 'tauruscanisrex.herokuapp.com', '127.0.0.1']
 DEBUG_PROPAGATE_EXCEPTIONS = True
@@ -151,10 +154,10 @@ LOGIN_REDIRECT_URL = "/"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-EMAIL_HOST = os.environ.get('EMAIL_HOST', )
-EMAIL_PORT = os.environ.get('EMAIL_PORT', )
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', )
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', )
+EMAIL_HOST = os.environ.get('EMAIL_HOST', config('EMAIL_HOST'))
+EMAIL_PORT = os.environ.get('EMAIL_PORT', config('EMAIL_PORT'))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', config('EMAIL_HOST_USER'))
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', config('EMAIL_HOST_PASSWORD'))
 EMAIL_USE_SSL = True
 
 

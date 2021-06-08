@@ -13,14 +13,17 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-  <h1 class="my-5 h1 text-center">TaurusCanis Rex</h1>
   {# <!-- {% include "carousel.html" %} --> #}
   <section id="video_section">
-    <div class="text-center">
+    <!-- <div class="text-center">
       <iframe class="text-center" width="560" height="315" src="https://www.youtube.com/embed/aoghb3mB1x4"
         frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen></iframe>
+    </div> -->
+    <div style="display: flex; justify-content: center; padding: 2em;">
+      <img class="img-fluid" style="max-width: 45%; text-align: center;" src="{% static 'img/svg/TCR_1.svg' %}">
     </div>
+    <h2 style="text-align: center;">TaurusCanis Rex</h2>
   </section>
   <section id="connect" class="mailing_list">
     <div class="mailing_list_blurb">

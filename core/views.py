@@ -33,7 +33,7 @@ import braintree
 #     order_id = body['order_id']
 #     order = Order.objects.get(id=order_id)
 #     order_total = int(order.get_total() * 100)
-#  
+#
 
 #     intent = stripe.PaymentIntent.create(
 #         amount=order_total,
@@ -42,7 +42,7 @@ import braintree
 #         # Verify your integration in this guide by including this parameter
 #         metadata={
 #             'integration_check': 'accept_a_payment',
-#             'order_id': order_id,   
+#             'order_id': order_id,
 #             'customer_id': order.customer.id,
 #         },
 #     )
@@ -199,7 +199,7 @@ def braintree_create_purchase(request):
             # print("request.session['id']: ", request.session['id'])
             # request.session['id'] = None
             # request.session.modified = True
-            
+
             print("SUCCESSS?????")
             context = {'url': 'order_confirmation_page_bt'}
             return JsonResponse(context)
@@ -215,9 +215,6 @@ def braintree_create_purchase(request):
         return redirect("/")
 
 
-#STRIPE INTEGRATION
-# stripe.api_key = settings.STRIPE_SECRET_KEY
-# stripe.api_key = 'sk_test_sYyZfPMDiefqOPb1I6yZvHzM00GXAujNFH'
 
 store = settings.PRINTFUL_KEY
 
@@ -548,7 +545,7 @@ class CheckoutView(View):
                     order.save()
 
 
-                    
+
                 else:
                     print("printful order exists")
                     # update_printful_order()
@@ -583,7 +580,7 @@ class CheckoutView(View):
 
 def stripe_payment(request):
     print("stripe_payment")
-    try: 
+    try:
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         print("BODY******: ", body)
@@ -626,8 +623,8 @@ def stripe_payment(request):
         # Send email to self
         messages.warning(request, "An error has ocurred. We have been notified.")
         return JsonResponse({ "next_url": "error_page" })
-    
-    
+
+
 
 class PaymentView(View):
     def get(self, *args, **kwargs):
@@ -642,7 +639,7 @@ class PaymentView(View):
             context = {
                 'order': order,
                 'DISPLAY_COUPON_FORM': False,
-                'stripe_key': 'pk_test_4tNiwpsFHEX7N7hon7bpW4kE00saVfxboZ',
+                'stripe_key': settings.STRIPE_KEY,
                 # "client_secret": client_secret
             }
             return render(self.request, "payment.html", context)
@@ -691,7 +688,7 @@ class PaymentView(View):
                 order.save()
                 print("save")
 
-                # self.request.session['id'] = None 
+                # self.request.session['id'] = None
                 # request.session.modified = True
 
                 # print("request.session['id']: ", request.session['id'])
@@ -866,7 +863,7 @@ def get_orders():
 
     response = requests.get(url, data, headers=headers)
     data = response.json()['result']
-   
+
     return data
 
 def create_printful_order(order, shipping_address):
@@ -1122,7 +1119,7 @@ class HomeView(View):
                 return redirect("/")
         else:
             messages.error(self.request, "There was an error. Please try again.")
-            return redirect("/") 
+            return redirect("/")
 
 # class OrderSummaryView(LoginRequiredMixin, View):
 class OrderSummaryView(View):
@@ -1186,7 +1183,7 @@ class ItemDetailView(DetailView):
 
         if slug == "leave_a_tip":
             donation_amount = self.request.POST.get('donation_amount')
-            add_donation_to_cart(self.request, slug=slug, donation_amount=donation_amount) 
+            add_donation_to_cart(self.request, slug=slug, donation_amount=donation_amount)
         elif slug == "test_item":
             add_to_cart(self.request, slug="test_item")
         else:
@@ -1194,7 +1191,7 @@ class ItemDetailView(DetailView):
             selected_variant_id = self.request.POST.get('selected_variant')
             quantity = int(self.request.POST.get('quantity'))
             # item_variant_id = int(self.request.POST.get('item_variant_id'))
-            
+
             print("QUANTITY: ", quantity)
             quantity_count = quantity
             print("Quantity Count: ", quantity_count)
@@ -1260,7 +1257,7 @@ def add_donation_to_cart(request, slug, donation_amount):
             messages.info(request, "This item was added to your cart.")
         # return redirect("core:order_summary")
         return
-    return 
+    return
 
 def tandc(request):
     return render(request, "tandc.html")
@@ -1277,7 +1274,7 @@ def add_to_cart(request, slug=None, item_variant_id=None, quantity=1, product_id
     print("add to cart")
     if slug is None:
         print("product_id: ", product_id)
-       
+
         print("slug none")
         print("quantity: ", quantity)
 

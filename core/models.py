@@ -179,7 +179,7 @@ class Customer(models.Model):
 
     # def __str__(self):
     #     return self.first_name + " " + self.last_name
-        # return self.first_name 
+        # return self.first_name
 
 class Address(models.Model):
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)

@@ -70,8 +70,18 @@ class Command(BaseCommand):
                     sku = variant["sku"],
                     product_id = variant["id"],
                 )
-
                 new_item_variant.save()
+
+                print_file in variant["files"]:
+                    new_item_variant_file = ItemVariantFiles(
+                        file_id = print_file["id"],
+                        item_variant = new_item_variant,
+                        url = ,
+                        file_name = 
+                    )
+                    new_item_variant_file.save()
+
+                
             count += 1
 
 
