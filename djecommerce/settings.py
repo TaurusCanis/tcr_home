@@ -4,7 +4,7 @@ from decouple import config
 
 # ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
 
-ENVIRONMENT = 'production'
+ENVIRONMENT = 'development'
 
 DEBUG = True
 # DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
@@ -14,7 +14,7 @@ BRAINTREE_PRODUCTION_MERCHANT_ID = os.environ.get('BRAINTREE_PRODUCTION_MERCHANT
 BRAINTREE_PRODUCTION_PUBLIC_KEY = os.environ.get('BRAINTREE_PRODUCTION_PUBLIC_KEY', config('BRAINTREE_PRODUCTION_PUBLIC_KEY'))
 BRAINTREE_PRODUCTION_PRIVATE_KEY = os.environ.get('BRAINTREE_PRODUCTION_PRIVATE_KEY', config('BRAINTREE_PRODUCTION_PRIVATE_KEY'))
 
-STRIPE_KEY = os.environ.get('STRIPE_KEY', config('STRIPE_KEY')) 
+STRIPE_KEY = os.environ.get('STRIPE_KEY', config('STRIPE_KEY'))
 
 # STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', )
 # STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', )
