@@ -3,20 +3,20 @@ import django_heroku
 
 # ENVIRONMENT = os.getenv('ENVIRONMENT', 'production')
 
-ENVIRONMENT = 'development'
+ENVIRONMENT = 'production'
 
 DEBUG = True
 # DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = os.environ.get('SECRET_KEY')
-BRAINTREE_PRODUCTION_MERCHANT_ID = os.environ.get('BRAINTREE_PRODUCTION_MERCHANT_ID')
-BRAINTREE_PRODUCTION_PUBLIC_KEY = os.environ.get('BRAINTREE_PRODUCTION_PUBLIC_KEY')
-BRAINTREE_PRODUCTION_PRIVATE_KEY = os.environ.get('BRAINTREE_PRODUCTION_PRIVATE_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', '05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj')
+BRAINTREE_PRODUCTION_MERCHANT_ID = os.environ.get('BRAINTREE_PRODUCTION_MERCHANT_ID', 'ypwk6jkdkhn6c3jx')
+BRAINTREE_PRODUCTION_PUBLIC_KEY = os.environ.get('BRAINTREE_PRODUCTION_PUBLIC_KEY', 'mrzs5jtfmvmkzkjv')
+BRAINTREE_PRODUCTION_PRIVATE_KEY = os.environ.get('BRAINTREE_PRODUCTION_PRIVATE_KEY', 'f49af70c2659139cf6cdf926b8fc253d')
 
 # STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', )
 # STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', )
 
-PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY')
+PRINTFUL_KEY = os.environ.get('PRINTFUL_KEY', '6bhck2wu-onuj-xp2n:ltb0-wsfqq6pskkwe')
 
 ALLOWED_HOSTS = ['tauruscanisrex.com', 'tauruscanisrex.herokuapp.com', '127.0.0.1']
 DEBUG_PROPAGATE_EXCEPTIONS = True
@@ -113,12 +113,12 @@ DATABASES = {
     #     "NAME": os.path.join(BASE_DIR, 'db.sqlite3')
     # }
     'default': {
-        'ENGINE': os.environ.get('DB_ENGINE'),
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.environ.get('DB_NAME', 'd3bnqqe27kearg'),
+        'USER': os.environ.get('DB_USER', 'gppyigmxlbgdkl'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', '0fb803b389f58d1dcc3e8da20eb68a5715fc50f38e1e6334a2667d6fc84b03c7'),
+        'HOST': os.environ.get('DB_HOST', 'ec2-35-171-250-21.compute-1.amazonaws.com'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
